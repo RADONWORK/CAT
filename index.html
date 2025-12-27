@@ -5,7 +5,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>CAT • Cultural Activity Team | RNSIT</title>
-  <meta name="description" content="RNSIT CAT – Register for events, join the club, view committees, and get campus updates. Light pastel, comic-style, high-end design."/>
+  <meta name="description" content="RNSIT CAT — Gen‑Z pastel, comic-stickers, anime.js animations. Register for events, join committees, and get updates."/>
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -13,7 +13,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
 
   <!-- Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet"/>
+
+  <!-- anime.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 
   <!-- Firebase (compat for simple inline usage) -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -21,31 +24,32 @@
 
   <style>
     :root{
-      /* Pastel palette */
-      --bg: #f7f9fc;
-      --bg-2: #ffffff;
-      --text: #1c2c4a;       /* navy */
-      --muted: #6b7b93;      /* soft slate */
-      --border: rgba(28,44,74,0.12);
+      /* Gen‑Z pastel palette */
+      --bg: #f8fafc;
+      --text: #1f2a44;
+      --muted: #6b7b93;
+      --card: #ffffff;
+      --border: rgba(31,42,68,0.12);
       --glass: rgba(255,255,255,0.85);
 
-      --mint:    #B8E6D0;    /* mint */
-      --sky:     #A8D8F0;    /* sky blue */
-      --peach:   #FFC7B0;    /* peach */
-      --lavender:#D7D3FF;    /* lavender */
-      --lemon:   #FFE9A9;    /* lemon */
-      --rose:    #FFB6C1;    /* rose */
+      --mint:    #B8E6D0;
+      --sky:     #A8D8F0;
+      --peach:   #FFC7B0;
+      --lavender:#D7D3FF;
+      --lemon:   #FFE9A9;
+      --rose:    #FFB6C1;
 
       --grad-1: linear-gradient(135deg, #B8E6D0, #A8D8F0);
       --grad-2: linear-gradient(135deg, #FFC7B0, #D7D3FF);
       --grad-3: linear-gradient(135deg, #FFE9A9, #A8D8F0);
 
       --radius: 18px;
-      --shadow: 0 16px 48px rgba(28,44,74,0.12);
+      --shadow: 0 16px 48px rgba(31,42,68,0.12);
 
       --font-head: "Baloo 2", system-ui, -apple-system, "Segoe UI", Roboto, Inter, "Helvetica Neue", Arial;
       --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Inter, "Helvetica Neue", Arial;
     }
+
     *{box-sizing:border-box}
     html,body{
       margin:0; padding:0;
@@ -53,14 +57,13 @@
         radial-gradient(900px 450px at 4% 0%, rgba(168,216,240,0.25), transparent 50%),
         radial-gradient(900px 450px at 96% 100%, rgba(255,231,160,0.25), transparent 50%),
         var(--bg);
-      color:var(--text);
-      font-family:var(--font-body);
+      color:var(--text); font-family:var(--font-body);
       overflow-x:hidden;
     }
     a{color:inherit;text-decoration:none}
     img{display:block;max-width:100%}
 
-    /* ===== Scroll progress bar + label ===== */
+    /* ===== Scroll progress + label ===== */
     #scrollProgress{position:fixed;top:0;left:0;height:6px;background:var(--grad-1);width:0%;z-index:1000}
     #scrollLabel{position:fixed;top:8px;right:12px;background:var(--glass);border:1px solid var(--border);border-radius:999px;padding:6px 10px;font-size:.85rem;color:var(--muted);backdrop-filter:blur(8px);z-index:1000}
 
@@ -69,54 +72,44 @@
     .dot{width:12px;height:12px;border-radius:50%;background:#e6eef7;border:1px solid var(--border);box-shadow:var(--shadow);transition:transform .25s ease, background .25s ease}
     .dot.active{background:#87c9ea; transform:scale(1.15)}
 
-    /* ===== Digital sticker illustrations (SVG) ===== */
+    /* ===== Digital stickers (real SVG) ===== */
     .sticker{position:fixed;z-index:-1;opacity:.55}
-    .sticker svg{filter:drop-shadow(0 6px 12px rgba(28,44,74,0.10))}
+    .sticker svg{filter:drop-shadow(0 6px 12px rgba(31,42,68,0.10))}
     .s1{top:6%; left:-40px; width:160px}
     .s2{bottom:10%; right:-40px; width:160px}
     .s3{top:58%; left:75%; width:120px}
-    /* Extra subtle floating */
-    .sticker{animation: stickerFloat 12s ease-in-out infinite}
-    @keyframes stickerFloat{
-      0%{transform:translateY(0)}
-      50%{transform:translateY(-8px)}
-      100%{transform:translateY(0)}
-    }
 
-    /* ===== Ticker (live updates with no overlap) ===== */
+    /* ===== Ticker: live updates, no overlap ===== */
     .ticker{position:sticky;top:0;z-index:60;background:var(--glass);border-bottom:1px solid var(--border);backdrop-filter:blur(10px)}
     .ticker-inner{display:flex;align-items:center;gap:12px;padding:10px 16px;overflow:hidden}
     .ticker-badge{font-family:var(--font-head);font-weight:700;background:#fff;border:1px solid var(--border);padding:8px 12px;border-radius:999px;color:#3b5c80}
     .ticker-track{white-space:nowrap;display:inline-block;will-change:transform}
     .ticker-items{display:inline-flex;gap:24px;align-items:center}
     .ticker-item{color:#3b5c80; white-space:nowrap}
-    .ticker:hover .ticker-track{animation-play-state:paused}
-    @keyframes slideX{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
     /* ===== Navbar ===== */
     .nav{
-      position:sticky;top:54px;z-index:50;
-      width:min(1200px,92%);margin:18px auto;
-      background:var(--glass);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);
-      display:flex;align-items:center;justify-content:space-between;padding:12px 16px
+      position:sticky; top:54px; z-index:50;
+      width:min(1200px,92%); margin:18px auto;
+      background:var(--glass); border:1px solid var(--border); border-radius:18px; box-shadow:var(--shadow);
+      display:flex; align-items:center; justify-content:space-between; padding:12px 16px;
     }
     .brand{font-family:var(--font-head);font-weight:700;display:flex;align-items:center;gap:10px}
-    .brand-logo{width:34px;height:34px;border-radius:12px;background:var(--grad-2);box-shadow:0 8px 16px rgba(28,44,74,0.10)}
+    .brand-logo{width:34px;height:34px;border-radius:12px;background:var(--grad-2);box-shadow:0 8px 16px rgba(31,42,68,0.10)}
     .brand span{background:var(--grad-1);-webkit-background-clip:text;background-clip:text;color:transparent}
     .nav ul{display:flex;gap:16px;list-style:none;margin:0;padding:0}
     .nav a{padding:10px 12px;border-radius:10px;color:#3b5c80}
-    .nav a:hover{background:#ffffff;box-shadow:0 10px 16px rgba(28,44,74,0.08)}
+    .nav a:hover{background:#ffffff;box-shadow:0 10px 16px rgba(31,42,68,0.08)}
     .actions{display:flex;gap:10px}
-    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--border);cursor:pointer;transition:transform .2s ease, filter .2s ease, box-shadow .2s ease;position:relative;overflow:hidden;background:#fff;color:#294867}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--border);cursor:pointer;transition:box-shadow .2s ease;position:relative;overflow:hidden;background:#fff;color:#294867}
     .btn-primary{background:var(--grad-1);color:#16324c;font-weight:700}
     .btn-outline{background:#ffffff;color:#294867;font-weight:600}
-    .btn:hover{box-shadow:0 12px 20px rgba(28,44,74,0.10)}
-    .btn.magnetic:hover{transform:translateY(-2px)}
+    .btn:hover{box-shadow:0 12px 20px rgba(31,42,68,0.10)}
 
     /* ===== Hero ===== */
     .hero{position:relative;width:min(1200px,92%);margin:24px auto;display:grid;grid-template-columns:1.1fr 0.9fr;gap:28px;align-items:center}
-    .hero-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);transform-style:preserve-3d;perspective:900px}
-    .hero h1{font-family:var(--font-head);font-weight:700;font-size:clamp(2rem, 3vw + 1rem, 3.6rem);line-height:1.03;margin:0 0 8px;color:#1c2c4a;text-shadow:0 2px 0 #fff, 0 4px 0 rgba(28,44,74,0.06), 0 8px 16px rgba(28,44,74,0.10)}
+    .hero-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+    .hero h1{font-family:var(--font-head);font-weight:700;font-size:clamp(2rem, 3vw + 1rem, 3.6rem);line-height:1.03;margin:0 0 8px;color:#1f2a44}
     .hero .sub{color:var(--muted);margin:0 0 18px}
     .hero .cta{display:flex;gap:12px;flex-wrap:wrap}
     .hero-media{border:1px solid var(--border);border-radius:var(--radius);background:#fff;box-shadow:var(--shadow);padding:16px}
@@ -129,7 +122,7 @@
 
     /* ===== Event cards ===== */
     .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-    .card{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;position:relative;overflow:hidden}
+    .card{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px}
     .card h3{margin:0 0 8px;font-weight:700}
     .card p{color:var(--muted);margin:0 0 14px}
     .card .meta{display:flex;gap:10px;color:#466b92;font-weight:700}
@@ -137,7 +130,7 @@
     .hero-badges{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
 
     /* ===== Modal ===== */
-    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(28,44,74,0.20);backdrop-filter:blur(8px);z-index:1000}
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(31,42,68,0.2);backdrop-filter:blur(8px);z-index:1000}
     .modal.open{display:flex}
     .modal-card{width:min(760px,92%);background:var(--glass);border:1px solid var(--border);border-radius:20px;padding:18px;box-shadow:var(--shadow)}
     .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
@@ -160,7 +153,7 @@
     /* ===== Committees ===== */
     .committees{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
     .committee{background:#fff;border:1px solid var(--border);border-radius:16px;padding:14px;box-shadow:var(--shadow);text-align:center;cursor:pointer;transition:transform .2s ease, box-shadow .2s ease}
-    .committee:hover{transform:translateY(-2px); box-shadow:0 16px 28px rgba(28,44,74,0.10)}
+    .committee:hover{transform:translateY(-2px); box-shadow:0 16px 28px rgba(31,42,68,0.10)}
     .committee .icon{font-size:28px;margin-bottom:8px;color:#466b92}
     .committee h4{margin:6px 0 4px;font-weight:700}
     .committee p{color:var(--muted);font-size:.95rem}
@@ -169,7 +162,7 @@
     .carousel{position:relative;background:var(--glass);border:1px solid var(--border);border-radius:20px;padding:14px;overflow:hidden}
     .carousel-track{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:12px}
     .member{min-width:240px;scroll-snap-align:start;background:#fff;border:1px solid var(--border);border-radius:18px;padding:12px;box-shadow:var(--shadow);text-align:center}
-    .member img{width:92px;height:92px;border-radius:18px;margin:10px auto;object-fit:cover;box-shadow:0 10px 24px rgba(28,44,74,0.10)}
+    .member img{width:92px;height:92px;border-radius:18px;margin:10px auto;object-fit:cover;box-shadow:0 10px 24px rgba(31,42,68,0.10)}
     .role{color:#466b92;font-weight:700;margin-top:4px}
 
     /* ===== Chatbot ===== */
@@ -273,21 +266,21 @@
 
   <!-- Hero -->
   <section class="hero" id="hero">
-    <div class="hero-card tilt" id="heroCard">
-      <h1>Cultural Activity Team</h1>
-      <p class="sub">A light, vibrant, comic-styled website for <strong>RNSIT</strong>. Register for events, join CAT, and stay updated smoothly.</p>
+    <div class="hero-card">
+      <h1 id="heroTitle">Cultural Activity Team</h1>
+      <p class="sub">Gen‑Z pastel, playful stickers, and anime.js motion for <strong>RNSIT</strong>. Register for events, join committees, and stay updated smoothly.</p>
       <div class="cta">
         <button class="btn btn-primary magnetic" onclick="document.getElementById('events').scrollIntoView({behavior:'smooth'})"><i class="fa-solid fa-ticket"></i> Register for Events</button>
         <button class="btn btn-outline magnetic" onclick="document.getElementById('recruitment').scrollIntoView({behavior:'smooth'})"><i class="fa-solid fa-user-plus"></i> Join CAT</button>
       </div>
       <div class="hero-badges" style="margin-top:10px">
-        <span class="badge">Pastel • Light • Comic</span>
-        <span class="badge">3D tilt micro-interactions</span>
+        <span class="badge">Pastel • Comic • Gen‑Z</span>
+        <span class="badge">anime.js everywhere</span>
         <span class="badge">Scroll timeline</span>
       </div>
     </div>
 
-    <div class="hero-media tilt">
+    <div class="hero-media">
       <h3 style="margin:0 0 8px;font-weight:700">What’s new?</h3>
       <p class="sub">Upcoming fests, workshops, and campus shows — live ticker on top and full list below.</p>
       <div class="hero-badges">
@@ -307,7 +300,7 @@
     <!-- Manage / Cancel -->
     <div class="hero-card" style="margin-top:22px">
       <h3 style="margin:0 0 8px">Manage / Cancel Registration</h3>
-      <p class="sub">Enter your email to view registrations, then cancel with reason (limited by T&C).</p>
+      <p class="sub">Enter your email to view registrations; cancel with reason (limited by T&C).</p>
       <div class="form-grid">
         <div class="form-row">
           <label for="manageEmail">Your email</label>
@@ -327,7 +320,7 @@
   <section id="recruitment">
     <h2 class="section-title">Join CAT — Recruitment</h2>
     <p class="section-sub">Become part of the backbone behind every RNSIT cultural event.</p>
-    <div id="recruitmentStatus" class="pill"><i class="fa-solid fa-minus"></i> Recruitment currently closed</div>
+    <div id="recruitmentStatus" class="badge" style="display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--border)"> <i class="fa-solid fa-minus"></i> Recruitment currently closed</div>
 
     <div id="recruitmentFormWrap" class="hero-card" style="margin-top:14px;display:none">
       <h3 style="margin:0 0 10px">Apply to CAT</h3>
@@ -347,7 +340,7 @@
     </div>
   </section>
 
-  <!-- Committees (click to view pop-up info) -->
+  <!-- Committees (click for anime.js pop-up) -->
   <section id="committees">
     <h2 class="section-title">CAT Committees</h2>
     <p class="section-sub">Eight squads making ideas real — click any to view details.</p>
@@ -385,10 +378,10 @@
 
   <!-- Newsletter modal -->
   <div class="modal" id="newsletterModal">
-    <div class="modal-card">
+    <div class="modal-card" id="newsletterCard">
       <div class="modal-header">
         <div class="modal-title"><i class="fa-solid fa-envelope-open-text"></i> Subscribe to CAT updates</div>
-        <div class="close" onclick="document.querySelector('#newsletterModal').classList.remove('open')"><i class="fa-solid fa-xmark"></i></div>
+        <div class="close" onclick="closeModal('newsletterModal')"><i class="fa-solid fa-xmark"></i></div>
       </div>
       <p class="terms">Sign up using Google or your college email to receive newsletters & event alerts.</p>
       <div class="form-grid">
@@ -410,10 +403,10 @@
 
   <!-- Register modal -->
   <div class="modal" id="registerModal">
-    <div class="modal-card">
+    <div class="modal-card" id="registerCard">
       <div class="modal-header">
         <div class="modal-title"><i class="fa-solid fa-ticket"></i> Event Registration</div>
-        <div class="close" onclick="closeRegister()"><i class="fa-solid fa-xmark"></i></div>
+        <div class="close" onclick="closeModal('registerModal')"><i class="fa-solid fa-xmark"></i></div>
       </div>
       <div id="regEventName" class="terms" style="margin-bottom:6px"></div>
       <div class="form-grid">
@@ -433,10 +426,10 @@
 
   <!-- Terms modal -->
   <div class="modal" id="termsModal">
-    <div class="modal-card">
+    <div class="modal-card" id="termsCard">
       <div class="modal-header">
         <div class="modal-title"><i class="fa-solid fa-file-shield"></i> Terms & Conditions</div>
-        <div class="close" onclick="document.querySelector('#termsModal').classList.remove('open')"><i class="fa-solid fa-xmark"></i></div>
+        <div class="close" onclick="closeModal('termsModal')"><i class="fa-solid fa-xmark"></i></div>
       </div>
       <div style="max-height:50vh;overflow:auto">
         <ul>
@@ -449,12 +442,12 @@
     </div>
   </div>
 
-  <!-- Committee detail modal (dynamic) -->
-  <div class="modal" id="committeeModal" aria-hidden="true">
-    <div class="modal-card">
+  <!-- Committee detail modal (anime.js pop) -->
+  <div class="modal" id="committeeModal">
+    <div class="modal-card" id="committeeCard">
       <div class="modal-header">
         <div class="modal-title" id="committeeTitle"><i class="fa-solid fa-layer-group"></i> Committee</div>
-        <div class="close" onclick="document.querySelector('#committeeModal').classList.remove('open')"><i class="fa-solid fa-xmark"></i></div>
+        <div class="close" onclick="closeModal('committeeModal')"><i class="fa-solid fa-xmark"></i></div>
       </div>
       <div id="committeeBody" style="max-height:55vh;overflow:auto"></div>
     </div>
@@ -495,86 +488,74 @@
     ];
 
     const COMMITTEES = [
-      {
-        id:"events", name:"Events", icon:"calendar-check",
-        intro:"Plans, schedules, and runs shows, fests, and workshops end-to-end.",
-        focus:["Program curation","Stage flow & emcee","Registrations & rosters","Run sheets & timing"],
-        tools:["Sheets/Forms","Cue lists","Stage timers"]
-      },
-      {
-        id:"dmc", name:"DMC", icon:"camera",
-        intro:"Design & Media Cell – creatives, photo/video coverage, content.",
-        focus:["Branding & posters","Photography & Reels","After-movies","Social content"],
-        tools:["Canva/Figma","DSLR/Gimbal","Premiere/CapCut"]
-      },
-      {
-        id:"decor", name:"Decor", icon:"wand-magic-sparkles",
-        intro:"Stage design, props, installations, and ambience.",
-        focus:["Stage layout","Props & signage","Art walls","Thematic sets"],
-        tools:["Craft & paint","Foamboard/LEDs","Logistics support"]
-      },
-      {
-        id:"sponsorship", name:"Sponsorship", icon:"handshake-angle",
-        intro:"Partners, budget, and sponsor deliverables.",
-        focus:["Prospecting","Pitches & decks","Negotiations","Benefits tracking"],
-        tools:["CRM sheets","Email templates","MoUs"]
-      },
-      {
-        id:"jukebox", name:"Jukebox", icon:"music",
-        intro:"Music programming, sound, playlists, and vibes.",
-        focus:["Setlists","Sound checks","DJ coordination","Live mixes"],
-        tools:["DAWs","Controllers","Mixers & mics"]
-      },
-      {
-        id:"disciplinary", name:"Disciplinary", icon:"shield-halved",
-        intro:"Codes of conduct, safety, and crowd control.",
-        focus:["Entry/ID checks","Backstage rules","Emergency response","Lost & found"],
-        tools:["Briefings","Security tie-ups","Incident logs"]
-      },
-      {
-        id:"hospitality", name:"Hospitality", icon:"people-carry-box",
-        intro:"Guests, artists, logistics, and care.",
-        focus:["Invites","Green rooms","Travel & stay","Refreshments"],
-        tools:["Itineraries","Checklists","Vendor coordination"]
-      },
-      {
-        id:"pr", name:"PR", icon:"bullhorn",
-        intro:"Promotion, outreach, and campus buzz.",
-        focus:["Announcements","Press/Newsletters","Influencer collabs","Booths & stalls"],
-        tools:["Copy docs","Mailers","Social boosts"]
-      }
+      { id:"events",        name:"Events",        icon:"calendar-check",        intro:"Plans & runs shows, fests, workshops end-to-end.", focus:["Program curation","Stage flow & emcee","Registrations & rosters","Run sheets & timing"], tools:["Sheets/Forms","Cue lists","Stage timers"] },
+      { id:"dmc",           name:"DMC",           icon:"camera",                intro:"Design & Media Cell – creatives, photo/video coverage.", focus:["Branding & posters","Photography & Reels","After-movies","Social content"], tools:["Canva/Figma","DSLR/Gimbal","Premiere/CapCut"] },
+      { id:"decor",         name:"Decor",         icon:"wand-magic-sparkles",   intro:"Stage design, props, installations, ambience.", focus:["Stage layout","Props & signage","Art walls","Thematic sets"], tools:["Craft & paint","Foamboard/LEDs","Logistics support"] },
+      { id:"sponsorship",   name:"Sponsorship",   icon:"handshake-angle",       intro:"Partners, budget & sponsor deliverables.", focus:["Prospecting","Pitches & decks","Negotiations","Benefits tracking"], tools:["CRM sheets","Email templates","MoUs"] },
+      { id:"jukebox",       name:"Jukebox",       icon:"music",                 intro:"Music programming, sound, playlists & vibes.", focus:["Setlists","Sound checks","DJ coordination","Live mixes"], tools:["DAWs","Controllers","Mixers & mics"] },
+      { id:"disciplinary",  name:"Disciplinary",  icon:"shield-halved",         intro:"Codes of conduct, safety & crowd control.", focus:["Entry/ID checks","Backstage rules","Emergency response","Lost & found"], tools:["Briefings","Security tie-ups","Incident logs"] },
+      { id:"hospitality",   name:"Hospitality",   icon:"people-carry-box",      intro:"Guests, artists, logistics & care.", focus:["Invites","Green rooms","Travel & stay","Refreshments"], tools:["Itineraries","Checklists","Vendor coordination"] },
+      { id:"pr",            name:"PR",            icon:"bullhorn",              intro:"Promotion, outreach & campus buzz.", focus:["Announcements","Press/Newsletters","Influencer collabs","Booths & stalls"], tools:["Copy docs","Mailers","Social boosts"] }
+    ];
+
+    const MEMBERS = [
+      {name:"Ananya", role:"President", img:"https://i.pravatar.cc/150?img=5"},
+      {name:"Rahul", role:"Vice President", img:"https://i.pravatar.cc/150?img=12"},
+      {name:"Meera", role:"Events Lead", img:"https://i.pravatar.cc/150?img=23"},
+      {name:"Arjun", role:"Stage Manager", img:"https://i.pravatar.cc/150?img=32"},
+      {name:"Riya", role:"Design Lead", img:"https://i.pravatar.cc/150?img=45"},
+      {name:"Neha", role:"PR & Outreach", img:"https://i.pravatar.cc/150?img=15"},
+      {name:"Kunal", role:"Logistics", img:"https://i.pravatar.cc/150?img=28"},
+      {name:"Varun", role:"Music Coord", img:"https://i.pravatar.cc/150?img=38"},
+      {name:"Sneha", role:"Dance Coord", img:"https://i.pravatar.cc/150?img=49"},
     ];
 
     // ======= YEAR =======
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    // ======= 3D-ish tilt =======
-    document.querySelectorAll('.tilt').forEach(el=>{
-      el.addEventListener('mousemove', (e)=>{
-        const r = el.getBoundingClientRect();
-        const x = e.clientX - r.left;
-        const y = e.clientY - r.top;
-        const rotX = ((y / r.height) - 0.5) * -8;
-        const rotY = ((x / r.width) - 0.5) * 8;
-        el.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+    // ======= anime.js: Hero title per-letter animation =======
+    const heroTitle = document.getElementById('heroTitle');
+    heroTitle.innerHTML = heroTitle.textContent.split('').map(ch => `<span class="letter">${ch}</span>`).join('');
+    anime.timeline({loop:false})
+      .add({
+        targets: '#heroTitle .letter',
+        translateY: [40,0],
+        opacity: [0,1],
+        easing: 'easeOutExpo',
+        duration: 600,
+        delay: (el, i) => 20*i
       });
-      el.addEventListener('mouseleave', ()=> el.style.transform = 'rotateX(0) rotateY(0)');
+
+    // ======= anime.js: Sticker gentle float =======
+    anime({
+      targets: '.sticker',
+      translateY: [-6, 6],
+      direction: 'alternate',
+      easing: 'easeInOutSine',
+      duration: 2400,
+      loop: true,
+      delay: (el, i) => i*400
     });
 
-    // ======= Scroll progress bar + label =======
+    // ======= Scroll progress + label =======
     function updateScrollProgress(){
       const doc = document.documentElement;
       const scrollTop = doc.scrollTop || document.body.scrollTop;
       const scrollHeight = doc.scrollHeight - doc.clientHeight;
       const percent = scrollHeight ? Math.round((scrollTop / scrollHeight) * 100) : 0;
-      document.getElementById('scrollProgress').style.width = percent + '%';
+      anime({
+        targets: '#scrollProgress',
+        width: `${percent}%`,
+        duration: 200,
+        easing: 'linear'
+      });
       document.getElementById('scrollLabel').textContent = `Scroll ${percent}%`;
     }
     window.addEventListener('scroll', updateScrollProgress);
     window.addEventListener('load', updateScrollProgress);
 
     // ======= Left timeline dots =======
-    const sections = [
+    const sectionMap = [
       {id:'hero', dot:'dot-hero'},
       {id:'events', dot:'dot-events'},
       {id:'recruitment', dot:'dot-recruitment'},
@@ -584,26 +565,33 @@
     ];
     const observer = new IntersectionObserver(entries=>{
       entries.forEach(entry=>{
-        const secId = entry.target.id;
-        const cfg = sections.find(s=>s.id===secId);
+        const cfg = sectionMap.find(s=>s.id===entry.target.id);
         if(!cfg) return;
         const dot = document.getElementById(cfg.dot);
-        if(entry.isIntersecting) dot.classList.add('active');
-        else dot.classList.remove('active');
+        if(entry.isIntersecting) dot.classList.add('active'); else dot.classList.remove('active');
       });
     }, {threshold:0.35});
-    sections.forEach(s=>{
-      const el = document.getElementById(s.id);
-      if(el) observer.observe(el);
-    });
+    sectionMap.forEach(s=>{ const el = document.getElementById(s.id); if(el) observer.observe(el); });
 
-    // ======= NEWS TICKER =======
+    // ======= NEWS TICKER via anime.js =======
     function renderTicker(){
       const itemsEl = document.getElementById("tickerItems");
       const items = EVENTS.map(ev => `<span class="ticker-item"><i class="fa-solid fa-star"></i> <strong>${ev.name}</strong> • ${ev.when} @ ${ev.where}</span>`).join("");
       itemsEl.innerHTML = items + items; // duplicate for infinite loop
+
       const track = document.getElementById("tickerTrack");
-      requestAnimationFrame(()=>{ track.style.animation = "slideX 22s linear infinite"; });
+      const anim = anime({
+        targets: track,
+        translateX: ['0%', '-50%'],
+        duration: 22000,
+        easing: 'linear',
+        loop: true,
+        autoplay: true
+      });
+
+      // pause on hover
+      track.addEventListener('mouseenter', ()=> anim.pause());
+      track.addEventListener('mouseleave', ()=> anim.play());
     }
     renderTicker();
 
@@ -612,7 +600,7 @@
     function tagPills(tags){ return tags.map(t => `<span class="badge">${t}</span>`).join(" "); }
     function renderEvents(){
       grid.innerHTML = EVENTS.map(ev => `
-        <div class="card tilt">
+        <div class="card">
           <h3>${ev.name}</h3>
           <p>${ev.desc}</p>
           <div class="meta"><span><i class="fa-solid fa-calendar"></i> ${ev.when}</span> • <span><i class="fa-solid fa-location-dot"></i> ${ev.where}</span></div>
@@ -622,6 +610,14 @@
           </div>
         </div>
       `).join("");
+      anime({
+        targets: '#eventsGrid .card',
+        opacity: [0,1],
+        translateY: [20,0],
+        easing: 'easeOutQuad',
+        duration: 500,
+        delay: (el, i) => 40*i
+      });
     }
     renderEvents();
 
@@ -631,10 +627,8 @@
       currentEventId = id;
       const ev = EVENTS.find(e=>e.id===id);
       document.getElementById("regEventName").innerHTML = `<strong>Event:</strong> ${ev.name} • <em>${ev.when} @ ${ev.where}</em>`;
-      document.getElementById("registerModal").classList.add("open");
-      document.getElementById("regStatus").textContent = "";
+      openModal('registerModal', '#registerCard');
     }
-    function closeRegister(){ document.getElementById("registerModal").classList.remove("open"); }
     function submitRegistration(){
       const name = document.getElementById("regName").value.trim();
       const email = document.getElementById("regEmail").value.trim();
@@ -642,16 +636,19 @@
       const dept = document.getElementById("regDept").value.trim();
       const notes = document.getElementById("regNotes").value.trim();
       const status = document.getElementById("regStatus");
-      if(!name || !email || !usn || !dept){ status.textContent = "Please fill all required fields."; return; }
+      if(!name || !email || !usn || !dept){
+        status.textContent = "Please fill all required fields.";
+        return;
+      }
       const ev = EVENTS.find(e=>e.id===currentEventId);
       const entry = {id: crypto.randomUUID(), eventId: ev.id, eventName: ev.name, name, email, usn, dept, notes, ts: Date.now(), status:"Active"};
       const store = JSON.parse(localStorage.getItem("catRegs")||"[]"); store.push(entry);
       localStorage.setItem("catRegs", JSON.stringify(store));
       status.textContent = "Registered! You’ll receive updates via email.";
-      setTimeout(()=> closeRegister(), 900);
+      setTimeout(()=> closeModal('registerModal'), 900);
     }
 
-    // ======= CANCEL =======
+    // ======= Manage / Cancel =======
     function loadMyRegistrations(){
       const email = document.getElementById("manageEmail").value.trim();
       const wrap = document.getElementById("myRegs");
@@ -688,10 +685,14 @@
       alert("Your registration has been cancelled under CAT terms. You’ll get a confirmation mail.");
     }
 
-    // ======= RECRUITMENT =======
+    // ======= RECRUITMENT TOGGLE =======
     const statusEl = document.getElementById("recruitmentStatus");
     const formWrap = document.getElementById("recruitmentFormWrap");
-    if(RECRUITMENT_OPEN){ statusEl.innerHTML = `<i class="fa-solid fa-bolt"></i> Recruitment open now`; formWrap.style.display = "block"; }
+    if(RECRUITMENT_OPEN){
+      statusEl.innerHTML = `<i class="fa-solid fa-bolt"></i> Recruitment open now`;
+      formWrap.style.display = "block";
+      anime({targets:'#recruitmentFormWrap', opacity:[0,1], translateY:[16,0], duration:400, easing:'easeOutQuad'});
+    }
     function submitRecruitment(){
       const rName = document.getElementById("rName").value.trim();
       const rEmail = document.getElementById("rEmail").value.trim();
@@ -706,16 +707,24 @@
       rStatus.textContent = "Application submitted. Verification will follow via email.";
     }
 
-    // ======= COMMITTEES GRID + POPUP =======
+    // ======= Committees grid + anime.js modal =======
     const committeesGrid = document.getElementById("committeesGrid");
     function renderCommittees(){
       committeesGrid.innerHTML = COMMITTEES.map(c=>`
-        <div class="committee tilt" onclick="openCommittee('${c.id}')">
+        <div class="committee" onclick="openCommittee('${c.id}')">
           <div class="icon"><i class="fa-solid fa-${c.icon}"></i></div>
           <h4>${c.name}</h4>
           <p>Tap to learn more</p>
         </div>
-      ").join("");
+      `).join("");
+      anime({
+        targets: '#committeesGrid .committee',
+        opacity: [0,1],
+        scale: [0.98, 1],
+        easing: 'easeOutQuad',
+        duration: 450,
+        delay: (el, i) => 60*i
+      });
     }
     renderCommittees();
 
@@ -735,40 +744,45 @@
           <ul>${toolsList}</ul>
         </div>
       `;
-      document.getElementById("committeeModal").classList.add("open");
+      openModal('committeeModal', '#committeeCard');
     }
 
-    // ======= MEMBERS =======
-    const MEMBERS = [
-      {name:"Ananya", role:"President", img:"https://i.pravatar.cc/150?img=5"},
-      {name:"Rahul", role:"Vice President", img:"https://i.pravatar.cc/150?img=12"},
-      {name:"Meera", role:"Events Lead", img:"https://i.pravatar.cc/150?img=23"},
-      {name:"Arjun", role:"Stage Manager", img:"https://i.pravatar.cc/150?img=32"},
-      {name:"Riya", role:"Design Lead", img:"https://i.pravatar.cc/150?img=45"},
-      {name:"Neha", role:"PR & Outreach", img:"https://i.pravatar.cc/150?img=15"},
-      {name:"Kunal", role:"Logistics", img:"https://i.pravatar.cc/150?img=28"},
-      {name:"Varun", role:"Music Coord", img:"https://i.pravatar.cc/150?img=38"},
-      {name:"Sneha", role:"Dance Coord", img:"https://i.pravatar.cc/150?img=49"}
-    ];
+    // ======= Members carousel (anime.js driven scroll) =======
     const membersTrack = document.getElementById("membersTrack");
     function renderMembers(){
       membersTrack.innerHTML = MEMBERS.map(m=>`
-        <div class="member tilt">
+        <div class="member">
           <img src="${m.img}" alt="${m.name}"/>
           <div style="font-weight:700">${m.name}</div>
           <div class="role">${m.role}</div>
         </div>
       `).join("");
-      // Gentle auto-scroll
-      let rafId;
-      function loop(){ membersTrack.scrollLeft += 0.4; rafId = requestAnimationFrame(loop); }
-      loop();
-      membersTrack.addEventListener("mouseenter", ()=> cancelAnimationFrame(rafId));
-      membersTrack.addEventListener("mouseleave", ()=> { rafId = requestAnimationFrame(loop); });
+
+      // auto-scroll using anime update callback
+      let width = membersTrack.scrollWidth - membersTrack.clientWidth;
+      function startAutoScroll(){
+        anime({
+          targets: {pos: 0},
+          pos: width,
+          duration: 30000,
+          easing: 'linear',
+          loop: true,
+          update: anim => {
+            membersTrack.scrollLeft = anim.animations[0].currentValue;
+          }
+        });
+      }
+      startAutoScroll();
+
+      // pause on hover
+      let paused = false;
+      membersTrack.addEventListener('mouseenter', ()=> { paused = true; anime.pause(); });
+      membersTrack.addEventListener('mouseleave', ()=> { if(paused){ paused=false; anime.restart(); } });
+      window.addEventListener('resize', ()=> { width = membersTrack.scrollWidth - membersTrack.clientWidth; });
     }
     renderMembers();
 
-    // ======= CONTACT =======
+    // ======= Contact =======
     function submitContact(){
       const n = document.getElementById("cName").value.trim();
       const e = document.getElementById("cEmail").value.trim();
@@ -780,9 +794,10 @@
       store.push({id:crypto.randomUUID(), n,e,t,m, ts:Date.now()});
       localStorage.setItem("catContact", JSON.stringify(store));
       s.textContent = "Sent! CAT team will reach out.";
+      anime({targets: '.chat-launch', scale:[1,1.08,1], duration:600, easing:'easeInOutQuad'});
     }
 
-    // ======= NEWSLETTER =======
+    // ======= Newsletter =======
     function subscribeNewsletter(){
       const email = document.getElementById("nEmail").value.trim();
       const err = document.getElementById("nError"); err.textContent = "";
@@ -790,11 +805,11 @@
       const store = JSON.parse(localStorage.getItem("catNews")||"[]");
       if(store.includes(email)){ err.textContent = "Already subscribed."; return; }
       store.push(email); localStorage.setItem("catNews", JSON.stringify(store));
+      closeModal('newsletterModal');
       alert("Subscribed! You’ll receive CAT newsletters.");
-      document.querySelector('#newsletterModal').classList.remove('open');
     }
 
-    // ======= CHATBOT =======
+    // ======= Chatbot =======
     function toggleChat(open){ document.getElementById("chatBox").classList.toggle("open", open); }
     document.getElementById("chatOpen").addEventListener("click", ()=> toggleChat(true));
     function sendChat(){
@@ -808,16 +823,51 @@
       }, 650);
     }
 
-    // ======= TERMS =======
-    function openTerms(){ document.getElementById("termsModal").classList.add("open"); }
+    // ======= Modals with anime.js =======
+    function openModal(id, cardSel){
+      const modal = document.getElementById(id);
+      modal.classList.add('open');
+      anime.set(cardSel, {scale: 0.96, opacity: 0, translateY: 16});
+      anime({targets: cardSel, scale: 1, opacity: 1, translateY: 0, duration: 300, easing: 'easeOutQuad'});
+      modal.addEventListener('click', (e)=>{ if(e.target === modal) closeModal(id); }, {once:true});
+    }
+    function closeModal(id){
+      const modal = document.getElementById(id);
+      const card = modal.querySelector('.modal-card');
+      anime({
+        targets: card,
+        scale: 0.96, opacity: 0, translateY: 16,
+        duration: 220, easing: 'easeInQuad',
+        complete: ()=> modal.classList.remove('open')
+      });
+    }
 
-    // ======= Modal backdrop close =======
-    document.querySelectorAll('.modal').forEach(m=>{
-      m.addEventListener('click', (e)=>{ if(e.target === m) m.classList.remove('open'); });
+    // ======= Magnetic buttons (anime.js ripple) =======
+    document.querySelectorAll('.magnetic').forEach(btn=>{
+      btn.addEventListener('click', (ev)=>{
+        const ripple = document.createElement('span');
+        ripple.style.position = 'absolute';
+        ripple.style.left = `${ev.offsetX}px`;
+        ripple.style.top = `${ev.offsetY}px`;
+        ripple.style.width = ripple.style.height = '0px';
+        ripple.style.borderRadius = '50%';
+        ripple.style.background = 'rgba(0,0,0,0.08)';
+        ripple.style.transform = 'translate(-50%, -50%)';
+        btn.appendChild(ripple);
+        anime({
+          targets: ripple,
+          width: 180, height: 180, opacity: [0.4, 0],
+          easing: 'easeOutQuad', duration: 600,
+          complete: ()=> ripple.remove()
+        });
+      });
     });
 
-    // ======= FIREBASE AUTH (Google Sign-In) =======
-    // Paste your Firebase config from Firebase Console:
+    // ======= Terms =======
+    function openTerms(){ openModal('termsModal', '#termsCard'); }
+
+    // ======= Firebase Auth (Google Sign-In) =======
+    // TODO: paste your Firebase config below (from Firebase Console)
     const firebaseConfig = {
       apiKey: "PASTE_API_KEY",
       authDomain: "PASTE_PROJECT.firebaseapp.com",
@@ -830,12 +880,16 @@
 
     function googleSignInStart(){
       if(!auth){ alert("Firebase not configured. Paste config in code."); return; }
-     rror: " + err.message));
+      auth.signInWithPopup(provider).then((result)=>{
+        const email = result.user?.email || "";
+        if(email && !email.endsWith("@rnsit.edu.in")){
+          alert("Signed in. For exclusive campus updates, use your @rnsit.edu.in ID.");
+        }
+      }).catch(err=> alert("Sign-in error: " + err.message));
     }
     const signInBtn = document.getElementById('signInBtn');
     const signOutBtn = document.getElementById('signOutBtn');
     signInBtn.addEventListener('click', googleSignInStart);
-
     if(auth){
       auth.onAuthStateChanged(user=>{
         if(user){
@@ -848,11 +902,6 @@
         }
       });
     }
-
-    // ======= Safety: ensure ticker items single-line =======
-    window.addEventListener('resize', ()=>{
-      document.querySelectorAll('.ticker-item').forEach(el=> el.style.whiteSpace = 'nowrap');
-    });
   </script>
 </body>
 </html>
