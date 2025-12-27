@@ -8,15 +8,15 @@
   <meta name="description" content="CAT RNSIT — Register for events, explore committees, meet the crew, and get updates." />
 
   <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  https://fonts.googleapis.com
+  https://fonts.gstatic.com
+  https://fonts.googleapis.com/css2?family=Baloo+2:wght@700&family=Inter:wght@400;600;700&display=swap
 
   <!-- Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css
 
   <!-- anime.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+  https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js</script>
 
   <style>
     /* ===== Neon Theme (mobile-first) ===== */
@@ -54,17 +54,29 @@
     .brand-logo{width:34px;height:34px;border-radius:10px;overflow:hidden;border:1px solid var(--border);box-shadow:0 0 18px rgba(154,125,255,0.4)}
     .brand-logo img{width:100%;height:100%;object-fit:cover}
     .brand span{background:var(--grad-1);-webkit-background-clip:text;background-clip:text;color:transparent}
-    .actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+    .actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;position:relative}
     .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;border:1px solid var(--border);cursor:pointer;background:var(--card);color:var(--text);font-weight:700;position:relative;overflow:hidden}
     .btn-primary{background:var(--grad-1);color:#0a0f1d}
     .btn-outline{background:var(--card)}
-    #userBadge{display:inline-flex;align-items:center;gap:8px;color:#cfe1ff}
-    #userBadge img{width:26px;height:26px;border-radius:50%;object-fit:cover;border:1px solid var(--border)}
+
+    /* Search */
     .nav-search{display:flex;gap:6px;align-items:center;flex:1;max-width:420px;margin:8px 12px}
     .nav-search input{flex:1;background:#0e1530;border:1px solid var(--border);border-radius:10px;padding:8px 10px;color:var(--text)}
+
+    /* User badge + dropdown menu */
+    #userBadge{display:none;align-items:center;gap:8px;color:#cfe1ff;background:rgba(255,255,255,0.08);border:1px solid var(--border);padding:6px 10px;border-radius:999px;cursor:pointer}
+    #userBadge img{width:26px;height:26px;border-radius:50%;object-fit:cover;border:1px solid var(--border)}
+    .user-menu{
+      position:absolute; right:12px; top:58px; z-index:100;
+      background:rgba(10,16,34,0.95); border:1px solid var(--border); border-radius:12px; min-width:180px; display:none; box-shadow:var(--shadow);
+    }
+    .user-menu.open{display:block}
+    .user-menu button{width:100%; text-align:left; border:0; background:transparent; color:var(--text); padding:10px 12px; cursor:pointer}
+    .user-menu button:hover{background:rgba(255,255,255,0.08)}
     @media (min-width:768px){ .nav-inner{padding:12px 16px} }
 
-    /* ===== Hero 3D (parallax layers + tilt) ===== */
+    /* ===== Hero 3D ===== */
     .hero{margin:14px auto; position:relative}
     .hero-3d{
       position:relative; height:220px; border-radius:16px; overflow:hidden;
@@ -75,15 +87,11 @@
     }
     .layer{position:absolute; inset:0; transform-style:preserve-3d}
     .blob{position:absolute; width:160px; height:160px; border-radius:40px;
-      background:radial-gradient(circle at 30% 30%, rgba(85,255,215,0.6), transparent 60%);
-      filter:blur(8px);
+      background:radial-gradient(circle at 30% 30%, rgba(85,255,215,0.6), transparent 60%); filter:blur(8px);
     }
     .blob.pink{background:radial-gradient(circle at 30% 30%, rgba(255,91,212,0.6), transparent 60%)}
     .blob.blue{background:radial-gradient(circle at 30% 30%, rgba(100,210,255,0.6), transparent 60%)}
-    .hero-card{
-      position:relative; margin-top:-60px;
-      background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow)
-    }
+    .hero-card{position:relative; margin-top:-60px; background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow)}
     .hero h1{font-family:var(--font-head);font-weight:900;font-size:clamp(1.8rem,4.8vw,3rem);line-height:1.06;margin:0 0 8px}
     .hero .sub{color:var(--muted);margin:0 0 12px}
     .cta{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -94,7 +102,7 @@
     .section-title{font-family:var(--font-head);font-weight:900;font-size:clamp(1.4rem,4.2vw,2.2rem);margin-bottom:8px;color:#cfe1ff}
     .section-sub{color:var(--muted);margin:-4px 0 18px}
 
-    /* ===== Events ===== */
+    /* ===== Cards / Grids ===== */
     .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     .card{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:12px}
     .card h3{margin:0 0 6px;font-weight:800}
@@ -104,7 +112,7 @@
     .hero-badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
     @media (max-width:560px){ .grid{grid-template-columns:1fr} }
 
-    /* ===== Committees filter + grid ===== */
+    /* ===== Committees (unchanged UI) ===== */
     .filter-bar{display:flex;gap:8px;align-items:center}
     .filter-bar select{background:#0e1530;border:1px solid var(--border);border-radius:10px;padding:8px;color:var(--text)}
     .committees{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
@@ -114,7 +122,7 @@
     .committee h4{margin:4px 0;font-weight:800}
     .committee p{color:#b9c7de;font-size:.95rem}
 
-    /* ===== Crew (members) with dropdown filter ===== */
+    /* ===== Crew (members) — uses your default avatar ===== */
     .crew-filter{display:flex;gap:8px;align-items:center;margin-bottom:8px}
     .crew-filter select{background:#0e1530;border:1px solid var(--border);border-radius:10px;padding:8px;color:var(--text)}
     .crew{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -190,20 +198,29 @@
     <div class="nav-inner container">
       <div class="brand">
         <div class="brand-logo">
-          <img src="https://res.cloudinary.com/dx1wxv6ck/image/upload/v1766845182/544806874_18340747831160890_4239570139746452250_n_ob2z58.jpg" alt="CAT logo">
+          https://res.cloudinary.com/dx1wxv6ck/image/upload/v1766845182/544806874_18340747831160890_4239570139746452250_n_ob2z58.jpg
         </div>
         CAT <span>RNSIT</span>
       </div>
+
       <div class="nav-search">
         <input id="navSearchInput" type="search" placeholder="Search RNSIT/CAT on Google">
         <button class="btn btn-outline" id="navSearchBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
       </div>
+
       <div class="actions">
-        <span id="userBadge"></span>
-        <!-- single combined button -->
+        <!-- User badge (photo + name) acts as menu trigger -->
+        <span id="userBadge">
+          <img id="userBadgePhoto" src="" alt="User"/>
+          <span id="userBadgeName"></span>
+        </span>
         <button id="signInBtn" class="btn btn-primary"><i class="fa-brands fa-google"></i> Sign in with Google</button>
-        <button id="signOutBtn" class="btn btn-outline" style="display:none"><i class="fa-solid fa-right-from-bracket"></i> Sign out</button>
-        <button id="profileBtn" class="btn btn-outline" style="display:none"><i class="fa-solid fa-user"></i> Profile</button>
+
+        <!-- Dropdown menu: Profile + Sign out -->
+        <div id="userMenu" class="user-menu">
+          <button id="openProfileMenuBtn"><i class="fa-solid fa-user"></i> &nbsp;Profile</button>
+          <button id="menuSignOutBtn"><i class="fa-solid fa-right-from-bracket"></i> &nbsp;Sign out</button>
+        </div>
       </div>
     </div>
   </nav>
@@ -247,7 +264,7 @@
     </div>
   </section>
 
-  <!-- Committees -->
+  <!-- Committees (unchanged UI) -->
   <section class="container" id="committees">
     <h2 class="section-title">CAT Committees</h2>
     <div class="filter-bar">
@@ -267,7 +284,7 @@
     <div class="committees" id="committeesGrid"></div>
   </section>
 
-  <!-- Members -->
+  <!-- Members (only default avatar changed) -->
   <section class="container" id="members">
     <h2 class="section-title">CAT Crew • The Backbone</h2>
     <div class="crew-filter">
@@ -365,7 +382,7 @@
     </div>
   </div>
 
-  <!-- Profile modal -->
+  <!-- Profile modal (kept same; includes Sign out) -->
   <div class="modal" id="profileModal">
     <div class="modal-card" id="profileCard">
       <div class="modal-header">
@@ -415,7 +432,7 @@
 
   <!-- App JS (UI + anime.js + validations + search + animations) -->
   <script>
-    /* ===== Data ===== */
+    /* ===== Data (unchanged) ===== */
     const EVENTS = [
       { id:"beats25", name:"Campus Beats ’25", when:"Jan 28, 2025", where:"Main Stage", type:"Fest", desc:"Music & dance showcase with teams and solo slots.", tags:["Music","Dance","Show"] },
       { id:"dramix",  name:"Dramix – Theatre Night", when:"Feb 14, 2025", where:"Auditorium", type:"Show", desc:"Drama, comedy, improv — stage & crew.", tags:["Theatre","Improv"] },
@@ -433,17 +450,17 @@
       { id:"pr",            name:"PR",            icon:"bullhorn",              intro:"Promotion, outreach & campus buzz.", focus:["Announcements","Press/Newsletters","Influencer collabs","Booths & stalls"], tools:["Copy docs","Mailers","Social boosts"] }
     ];
     const MEMBERS = [
-      {name:"Ananya", role:"President", tier:"lead", img:""},
-      {name:"Rahul", role:"Vice President", tier:"lead", img:""},
-      {name:"Meera", role:"Events Lead", tier:"lead", img:""},
-      {name:"Arjun", role:"Stage Manager", tier:"core", img:""},
-      {name:"Riya", role:"Design Lead", tier:"lead", img:""},
-      {name:"Neha", role:"PR & Outreach", tier:"core", img:""},
-      {name:"Kunal", role:"Logistics", tier:"core", img:""},
-      {name:"Varun", role:"Music Coord", tier:"core", img:""},
-      {name:"Sneha", role:"Dance Coord", tier:"core", img:""},
+      {name:"Ananya", role:"President", tier:"lead"},
+      {name:"Rahul", role:"Vice President", tier:"lead"},
+      {name:"Meera", role:"Events Lead", tier:"lead"},
+      {name:"Arjun", role:"Stage Manager", tier:"core"},
+      {name:"Riya", role:"Design Lead", tier:"lead"},
+      {name:"Neha", role:"PR & Outreach", tier:"core"},
+      {name:"Kunal", role:"Logistics", tier:"core"},
+      {name:"Varun", role:"Music Coord", tier:"core"},
+      {name:"Sneha", role:"Dance Coord", tier:"core"},
     ];
-    const DEFAULT_AVATAR = "https://cdn.jsdelivr.net/gh/edent/SuperTinyIcons/images/svg/user.svg";
+    const DEFAULT_AVATAR = "https://res.cloudinary.com/dx1wxv6ck/image/upload/v1766859521/user-account-icon-for-your-desig_kunqf7.png";
     const DEPTS = ["CSE","ISE","ECE","EEE","ME","BT","AIML","DS","CIV","ET","MBA","MCA"];
 
     /* ===== Year & loader ===== */
@@ -488,7 +505,7 @@
       });
     })();
 
-    /* ===== Ripple effect on buttons ===== */
+    /* ===== Button ripple ===== */
     document.querySelectorAll('.btn').forEach(btn=>{
       btn.addEventListener('click', (ev)=>{
         const ripple = document.createElement('span');
@@ -597,7 +614,7 @@
       loadMyRegistrations();
     }
 
-    /* ===== Committees render + filter + popup ===== */
+    /* ===== Committees render + filter + popup (unchanged logic) ===== */
     const committeesGrid=document.getElementById("committeesGrid");
     function renderCommittees(list){
       committeesGrid.innerHTML = list.map(c=>`
@@ -627,13 +644,13 @@
       openModal('committeeModal','#committeeCard');
     }
 
-    /* ===== Crew (members) with filter ===== */
+    /* ===== Crew (members) — only avatar changed ===== */
     const membersGrid=document.getElementById("membersGrid");
     const crewFilter = document.getElementById("crewFilter");
     function renderMembers(list){
       membersGrid.innerHTML = list.map(m=>`
         <div class="member">
-          ${m.img || DEFAULT_AVATAR}
+          <img src="${DEFAULT_AVATAR}" alt="${m.name}">
           <div class="name">${m.name}</div>
           <div class="role">${m.role}</div>
         </div>
@@ -661,7 +678,7 @@
     }
 
     /* ===== Chat (offline rules + optional AI endpoint) ===== */
-    const AI_ENDPOINT = ""; // ⚠️ Set to your backend URL returning {answer:"..."} to enable real AI.
+    const AI_ENDPOINT = ""; // Set to your backend URL returning {answer:"..."} to enable real AI.
     function toggleChat(open){ document.getElementById("chatBox").classList.toggle("open", open); }
     document.getElementById("chatOpen").addEventListener("click", ()=> toggleChat(true));
     const BOT = {
@@ -714,7 +731,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
-    /* Your Firebase config */
+    /* Your Firebase config (unchanged) */
     const firebaseConfig = {
       apiKey: "AIzaSyBcHCDBg7FMk9ItN1851vujLqhQaLQ7wCY",
       authDomain: "cat-rnsit.firebaseapp.com",
@@ -730,16 +747,22 @@
     const provider = new GoogleAuthProvider();
 
     const signInBtn  = document.getElementById("signInBtn");
-    const signOutBtn = document.getElementById("signOutBtn");
     const userBadge  = document.getElementById("userBadge");
-    const profileBtn = document.getElementById("profileBtn");
+    const userBadgePhoto = document.getElementById("userBadgePhoto");
+    const userBadgeName = document.getElementById("userBadgeName");
+    const userMenu = document.getElementById("userMenu");
+    const openProfileMenuBtn = document.getElementById("openProfileMenuBtn");
+    const menuSignOutBtn = document.getElementById("menuSignOutBtn");
 
     function setUserBadge(u){
-      const photo = u.photoURL || "https://cdn.jsdelivr.net/gh/edent/SuperTinyIcons/images/svg/user.svg";
-      userBadge.innerHTML = `${photo}<span>${u.displayName || u.email}</span>`;
+      const photo = u.photoURL || "https://res.cloudinary.com/dx1wxv6ck/image/upload/v1766859521/user-account-icon-for-your-desig_kunqf7.png";
+      userBadgePhoto.src = photo;
+      userBadgeName.textContent = u.displayName || u.email || "Student";
+      userBadge.style.display = "inline-flex";
+      signInBtn.style.display = "none";
     }
     function openProfile(u){
-      document.getElementById("profilePhoto").src = u.photoURL || "https://cdn.jsdelivr.net/gh/edent/SuperTinyIcons/images/svg/user.svg";
+      document.getElementById("profilePhoto").src = u.photoURL || "https://res.cloudinary.com/dx1wxv6ck/image/upload/v1766859521/user-account-icon-for-your-desig_kunqf7.png";
       document.getElementById("profileName").value = u.displayName || "";
       document.getElementById("profilePhotoURL").value = u.photoURL || "";
       document.getElementById("profileEmail").value = u.email || "";
@@ -752,7 +775,7 @@
       try{
         await updateProfile(u, { displayName: name || u.displayName, photoURL: photo || u.photoURL });
         setUserBadge(u);
-        document.getElementById("profilePhoto").src = u.photoURL || "https://cdn.jsdelivr.net/gh/edent/SuperTinyIcons/images/svg/user.svg";
+        document.getElementById("profilePhoto").src = u.photoURL || "https://res.cloudinary.com/dx1wxv6ck/image/upload/v1766859521/user-account-icon-for-your-desig_kunqf7.png";
         alert("Profile updated");
       }catch(e){ alert("Update error: " + e.message); }
     }
@@ -762,8 +785,6 @@
         const res = await signInWithPopup(auth, provider);
         const u = res.user;
         setUserBadge(u);
-        profileBtn.style.display = "inline-flex";
-        // After sign-in: ask opt-in for updates
         const wants = confirm("Do you want to receive CAT updates & newsletters?");
         if(wants){
           const store = JSON.parse(localStorage.getItem("catNews")||"[]");
@@ -777,25 +798,41 @@
       }
     }
     async function googleSignOut(){
-      try { await signOut(auth); userBadge.innerHTML = ""; profileBtn.style.display="none"; alert("Signed out"); }
+      try { await signOut(auth); userBadge.style.display="none"; signInBtn.style.display="inline-flex"; userMenu.classList.remove('open'); alert("Signed out"); }
       catch(e){ alert("Sign-out error: " + e.message); }
     }
 
+    // Navbar events
     signInBtn?.addEventListener("click", googleSignInStart);
-    signOutBtn?.addEventListener("click", googleSignOut);
     document.getElementById("saveProfileBtn").addEventListener("click", saveProfile);
     document.getElementById("signOutProfileBtn").addEventListener("click", googleSignOut);
 
+    // Open dropdown menu when clicking user badge
+    userBadge.addEventListener('click', ()=>{
+      userMenu.classList.toggle('open');
+    });
+    openProfileMenuBtn.addEventListener('click', ()=>{
+      userMenu.classList.remove('open');
+      const u = auth.currentUser;
+      if(u) openProfile(u);
+    });
+    menuSignOutBtn.addEventListener('click', ()=>{
+      userMenu.classList.remove('open');
+      googleSignOut();
+    });
+    // Close menu on outside click
+    document.addEventListener('click', (e)=>{
+      const within = userBadge.contains(e.target) || userMenu.contains(e.target);
+      if(!within) userMenu.classList.remove('open');
+    });
+
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        signInBtn.style.display = "none";
-        signOutBtn.style.display = "inline-flex";
-        profileBtn.style.display = "inline-flex";
         setUserBadge(user);
       } else {
-        signOutBtn.style.display = "none";
+        userBadge.style.display = "none";
         signInBtn.style.display = "inline-flex";
-        profileBtn.style.display = "none";
+        userMenu.classList.remove('open');
       }
     });
   </script>
