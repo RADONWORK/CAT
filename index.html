@@ -8,11 +8,11 @@
   <meta name="description" content="CAT RNSIT — Register for events, explore committees, meet the crew, and get updates." />
 
   <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <!-- Icons -->
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
 
   <!-- anime.js -->
@@ -49,7 +49,7 @@
 
     /* ===== Navbar ===== */
     .nav{position:sticky;top:10px;z-index:50;margin:14px auto;border-radius:16px;background:var(--glass);border:1px solid var(--border);box-shadow:var(--shadow)}
-    .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:10px 12px}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;flex-wrap:wrap;gap:8px}
     .brand{display:flex;align-items:center;gap:10px;font-family:var(--font-head);font-weight:700}
     .brand-logo{width:34px;height:34px;border-radius:10px;overflow:hidden;border:1px solid var(--border);box-shadow:0 0 18px rgba(154,125,255,0.4)}
     .brand-logo img{width:100%;height:100%;object-fit:cover}
@@ -60,21 +60,26 @@
     .btn-primary{background:var(--grad-1);color:#0a0f1d}
     .btn-outline{background:var(--card)}
 
-    /* Search */
-    .nav-search{display:flex;gap:6px;align-items:center;flex:1;max-width:420px;margin:8px 12px}
+    /* Search (mobile fix: shrink & stack) */
+    .nav-search{display:flex;gap:6px;align-items:center;flex:1;max-width:420px;margin:8px 0}
     .nav-search input{flex:1;background:#0e1530;border:1px solid var(--border);border-radius:10px;padding:8px 10px;color:var(--text)}
+    @media (max-width:560px){
+      .nav-search{ max-width:100%; order:3; }
+      #signInBtn{ font-size:.9rem; padding:8px 10px; }
+      .actions{ gap:6px; }
+    }
 
     /* User badge + dropdown menu */
     #userBadge{display:none;align-items:center;gap:8px;color:#cfe1ff;background:rgba(255,255,255,0.08);border:1px solid var(--border);padding:6px 10px;border-radius:999px;cursor:pointer}
     #userBadge img{width:26px;height:26px;border-radius:50%;object-fit:cover;border:1px solid var(--border)}
     .user-menu{
       position:absolute; right:12px; top:58px; z-index:100;
-      background:rgba(10,16,34,0.95); border:1px solid var(--border); border-radius:12px; min-width:180px; display:none; box-shadow:var(--shadow);
+      background:rgba(10,16,34,0.95); border:1px solid var(--border); border-radius:12px; min-width:200px; display:none; box-shadow:var(--shadow);
     }
     .user-menu.open{display:block}
     .user-menu button{width:100%; text-align:left; border:0; background:transparent; color:var(--text); padding:10px 12px; cursor:pointer}
     .user-menu button:hover{background:rgba(255,255,255,0.08)}
-    @media (min-width:768px){ .nav-inner{padding:12px 16px} }
+    .user-menu .small{font-size:.9rem;color:#b9c7de;padding:8px 12px}
 
     /* ===== Hero 3D ===== */
     .hero{margin:14px auto; position:relative}
@@ -112,7 +117,7 @@
     .hero-badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
     @media (max-width:560px){ .grid{grid-template-columns:1fr} }
 
-    /* ===== Committees — NO DROPDOWN (fixed grid) ===== */
+    /* ===== Committees — fixed grid (no dropdown) ===== */
     .committees{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
     @media (min-width:768px){ .committees{grid-template-columns:repeat(4,1fr)} }
     .committee{background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:12px;text-align:center;cursor:pointer}
@@ -155,6 +160,10 @@
     .error{color:#ff7b7b;font-size:.9rem;min-height:18px}
     @media (max-width:560px){ .form-grid{grid-template-columns:1fr} }
 
+    /* Profile modal fit */
+    #profileCard { max-height: 80vh; overflow:auto; }
+    @media (max-width:560px){ #profileCard { padding:12px; } }
+
     /* ===== Chat ===== */
     .chat-launch{position:fixed;right:14px;bottom:14px;z-index:60;background:var(--grad-2);color:#0a0f1d;border-radius:999px;padding:12px 14px;box-shadow:var(--shadow);cursor:pointer;font-weight:900}
     .chat{position:fixed;right:14px;bottom:70px;width:min(360px,92vw);max-height:62vh;z-index:60;background:rgba(10,16,34,0.92);border:1px solid var(--border);border-radius:16px;display:none;flex-direction:column;overflow:hidden}
@@ -196,7 +205,7 @@
     <div class="nav-inner container">
       <div class="brand">
         <div class="brand-logo">
-          <img src="https://res.cloudinary.com/dx1wxv6ck/image/upload/v1766845182/544806874_18340747831160890_4239570139746452250_n_ob2z58.jpg" alt="CAT logo"/>
+          <img src="https://res.cloudinary.com/dx1wxv6ck/image/upload/v1766845182/544806874_18340747831160890_4239570139746452250_n_ob2z58.jpg" alt="CAT Logo">
         </div>
         CAT <span>RNSIT</span>
       </div>
@@ -216,6 +225,7 @@
 
         <!-- Dropdown menu: Profile + Sign out -->
         <div id="userMenu" class="user-menu">
+          <div class="small" id="userMenuStatus">Signed in</div>
           <button id="openProfileMenuBtn"><i class="fa-solid fa-user"></i> &nbsp;Profile</button>
           <button id="menuSignOutBtn"><i class="fa-solid fa-right-from-bracket"></i> &nbsp;Sign out</button>
         </div>
@@ -366,7 +376,7 @@
     </div>
   </div>
 
-  <!-- Profile modal -->
+  <!-- Profile modal (enhanced features) -->
   <div class="modal" id="profileModal">
     <div class="modal-card" id="profileCard">
       <div class="modal-header">
@@ -390,6 +400,25 @@
           <label>Email</label>
           <input id="profileEmail" type="email" readonly>
         </div>
+        <div class="form-row">
+          <label for="profileYear">Year</label>
+          <select id="profileYear">
+            <option value="">Select</option>
+            <option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option>4th Year</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label for="profileDept">Department</label>
+          <select id="profileDept">
+            <option value="">Select</option>
+            <option>CSE</option><option>ISE</option><option>ECE</option><option>EEE</option><option>ME</option><option>BT</option>
+            <option>AIML</option><option>DS</option><option>CIV</option><option>ET</option><option>MBA</option><option>MCA</option>
+          </select>
+        </div>
+        <div class="form-row" style="grid-column:1/-1">
+          <label for="profileBio">Bio</label>
+          <textarea id="profileBio" placeholder="Tell us about yourself"></textarea>
+        </div>
       </div>
       <div class="actions" style="margin-top:10px">
         <button class="btn btn-primary" id="saveProfileBtn"><i class="fa-solid fa-floppy-disk"></i> Save</button>
@@ -402,7 +431,7 @@
   <button class="chat-launch" id="chatOpen"><i class="fa-solid fa-comment"></i> Ask CAT</button>
   <div class="chat" id="chatBox">
     <div class="chat-header"><strong><i class="fa-solid fa-robot"></i> CAT Helpdesk</strong><span class="close" onclick="toggleChat(false)"><i class="fa-solid fa-xmark"></i></span></div>
-    <div class="chat-body" id="chatBody"><div class="bubble">Hi! Ask your question. CAT team will contact you.</div></div>
+    <div class="chat-body" id="chatBody"><div class="bubble">Hi! Type anything—I'll fetch web results inline.</div></div>
     <div class="chat-form"><input id="chatInput" type="text" placeholder="Type your question..."/><button class="btn btn-primary btn-small" onclick="sendChat()"><i class="fa-solid fa-paper-plane"></i></button></div>
   </div>
 
@@ -630,7 +659,7 @@
     function renderMembers(list){
       membersGrid.innerHTML = list.map(m=>`
         <div class="member">
-          <img src="${DEFAULT_AVATAR}" alt="${m.name}"/>
+          <img src="${DEFAULT_AVATAR}" alt="${m.name}">
           <div class="name">${m.name}</div>
           <div class="role">${m.role}</div>
         </div>
@@ -657,40 +686,58 @@
       s.textContent="Sent! CAT team will reach out.";
     }
 
-    /* ===== Chat (offline rules + optional AI endpoint) ===== */
-    const AI_ENDPOINT = ""; // Set to your backend URL returning {answer:"..."} to enable real AI.
+    /* ===== Chat: web search integration (DuckDuckGo inline + Google fallback) ===== */
+    async function fetchInline(q){
+      try{
+        const res = await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(q)}&format=json&no_redirect=1&no_html=1`);
+        const data = await res.json();
+        const items = [];
+        if (data.AbstractText && data.AbstractURL) {
+          items.push({title: data.Heading || 'Result', url: data.AbstractURL, snippet: data.AbstractText});
+        }
+        if (Array.isArray(data.RelatedTopics)) {
+          for (const t of data.RelatedTopics) {
+            if (t.Text && t.FirstURL) items.push({title: t.Text, url: t.FirstURL, snippet: t.Text});
+            if (items.length >= 5) break;
+          }
+        }
+        return items;
+      }catch(e){
+        return [];
+      }
+    }
     function toggleChat(open){ document.getElementById("chatBox").classList.toggle("open", open); }
     document.getElementById("chatOpen").addEventListener("click", ()=> toggleChat(true));
-    const BOT = {
-      rules: [
-        {k:/event|register/i, a:"Go to Events → tap Register. USN must look like 1RN24ME015. Pick your department via drawer."},
-        {k:/recruit|join/i,   a:"Recruitment opens during drives. Keep an eye on this site and socials."},
-        {k:/cancel/i,         a:"Use Manage/Cancel → enter your email → select a reason → Cancel."},
-        {k:/committee|team/i, a:"Open Committees and tap any card for responsibilities & tools."},
-        {k:/contact|help|support/i, a:"Message here or mail cat@rnsit.edu.in. We’ll reach out."},
-      ],
-      fallback:"Thanks! We’ll contact you soon. For urgent matters, mail cat@rnsit.edu.in."
-    };
     async function sendChat(){
-      const input=document.getElementById("chatInput"); const msg=input.value.trim(); if(!msg) return;
-      const body=document.getElementById("chatBody");
-      body.insertAdjacentHTML("beforeend", `<div class="bubble me">${msg}</div>`); input.value=""; body.scrollTop=body.scrollHeight;
+      const input = document.getElementById("chatInput");
+      const msg = input.value.trim();
+      if (!msg) return;
 
-      if(AI_ENDPOINT){
-        try{
-          const res = await fetch(AI_ENDPOINT, {method:"POST", headers:{'Content-Type':'application/json'}, body:JSON.stringify({q:msg})});
-          const data = await res.json();
-          body.insertAdjacentHTML("beforeend", `<div class="bubble">${data.answer || BOT.fallback}</div>`);
-          body.scrollTop=body.scrollHeight;
-          return;
-        }catch(e){
-          body.insertAdjacentHTML("beforeend", `<div class="bubble">AI temporarily unavailable. ${BOT.fallback}</div>`);
-          body.scrollTop=body.scrollHeight;
-          return;
-        }
+      const body = document.getElementById("chatBody");
+      body.insertAdjacentHTML("beforeend", `<div class="bubble me">${msg}</div>`);
+      input.value = "";
+      body.scrollTop = body.scrollHeight;
+
+      const query = `${msg} RNSIT CAT`;
+      const results = await fetchInline(query);
+      if(results.length>0){
+        const html = results.map(r=>`
+          <div class="bubble">
+            <div style="font-weight:800">${r.title}</div>
+            <div class="terms">${r.snippet}</div>
+            <div style="margin-top:6px">
+              <a href="${r.url}" target="_blank" rel="noopener noreferrer" class="btn btn-outline"><i class="fa-solid fa-up-right-from-square"></i> Open</a>
+            </div>
+          </div>
+        `).join("");
+        body.insertAdjacentHTML("beforeend", html);
+        body.scrollTop=body.scrollHeight;
+      }else{
+        const url = "https://www.google.com/search?q=" + encodeURIComponent(query);
+        body.insertAdjacentHTML("beforeend", `<div class="bubble">Opening Google for more results…</div>`);
+        window.open(url, "_blank");
+        body.scrollTop=body.scrollHeight;
       }
-      const hit = BOT.rules.find(r=>r.k.test(msg)); const reply = hit ? hit.a : BOT.fallback;
-      setTimeout(()=>{ body.insertAdjacentHTML("beforeend", `<div class="bubble">${reply}</div>`); body.scrollTop=body.scrollHeight; }, 450);
     }
 
     /* ===== Modals ===== */
@@ -730,31 +777,55 @@
     const userBadgePhoto = document.getElementById("userBadgePhoto");
     const userBadgeName = document.getElementById("userBadgeName");
     const userMenu = document.getElementById("userMenu");
+    const userMenuStatus = document.getElementById("userMenuStatus");
     const openProfileMenuBtn = document.getElementById("openProfileMenuBtn");
     const menuSignOutBtn = document.getElementById("menuSignOutBtn");
 
+    const DEFAULT_AVATAR = "https://res.cloudinary.com/dx1wxv6ck/image/upload/v1766859521/user-account-icon-for-your-desig_kunqf7.png";
+
+    /* Local profile store by uid */
+    function saveLocalProfile(uid, obj){
+      const store = JSON.parse(localStorage.getItem("catProfiles")||"{}");
+      store[uid] = {...(store[uid]||{}), ...obj};
+      localStorage.setItem("catProfiles", JSON.stringify(store));
+    }
+    function loadLocalProfile(uid){
+      const store = JSON.parse(localStorage.getItem("catProfiles")||"{}");
+      return store[uid] || {};
+    }
+
     function setUserBadge(u){
-      const photo = u.photoURL || "https://res.cloudinary.com/dx1wxv6ck/image/upload/v1766859521/user-account-icon-for-your-desig_kunqf7.png";
+      const photo = u.photoURL || DEFAULT_AVATAR;
       userBadgePhoto.src = photo;
       userBadgeName.textContent = u.displayName || u.email || "Student";
       userBadge.style.display = "inline-flex";
       signInBtn.style.display = "none";
+      userMenuStatus.textContent = `Signed in as ${u.email || 'user'}`;
     }
     function openProfile(u){
-      document.getElementById("profilePhoto").src = u.photoURL || "https://res.cloudinary.com/dx1wxv6ck/image/upload/v1766859521/user-account-icon-for-your-desig_kunqf7.png";
-      document.getElementById("profileName").value = u.displayName || "";
-      document.getElementById("profilePhotoURL").value = u.photoURL || "";
+      const local = loadLocalProfile(u.uid);
+      document.getElementById("profilePhoto").src = u.photoURL || DEFAULT_AVATAR;
+      document.getElementById("profileName").value = u.displayName || local.name || "";
+      document.getElementById("profilePhotoURL").value = u.photoURL || local.photoURL || "";
       document.getElementById("profileEmail").value = u.email || "";
+      document.getElementById("profileYear").value = local.year || "";
+      document.getElementById("profileDept").value = local.dept || "";
+      document.getElementById("profileBio").value = local.bio || "";
       openModal('profileModal','#profileCard');
     }
     async function saveProfile(){
       const u = auth.currentUser; if(!u) return;
       const name = document.getElementById("profileName").value.trim();
       const photo = document.getElementById("profilePhotoURL").value.trim();
+      const year  = document.getElementById("profileYear").value.trim();
+      const dept  = document.getElementById("profileDept").value.trim();
+      const bio   = document.getElementById("profileBio").value.trim();
+
       try{
         await updateProfile(u, { displayName: name || u.displayName, photoURL: photo || u.photoURL });
+        saveLocalProfile(u.uid, { name, photoURL: photo, year, dept, bio });
         setUserBadge(u);
-        document.getElementById("profilePhoto").src = u.photoURL || "https://res.cloudinary.com/dx1wxv6ck/image/upload/v1766859521/user-account-icon-for-your-desig_kunqf7.png";
+        document.getElementById("profilePhoto").src = u.photoURL || DEFAULT_AVATAR;
         alert("Profile updated");
       }catch(e){ alert("Update error: " + e.message); }
     }
@@ -809,8 +880,8 @@
         userBadge.style.display = "none";
         signInBtn.style.display = "inline-flex";
         userMenu.classList.remove('open');
+        userMenuStatus.textContent = "Signed out";
       }
     });
   </script>
-</body>
-</html>
+</
