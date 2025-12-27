@@ -8,15 +8,15 @@
   <meta name="description" content="CAT RNSIT — Register for events, explore committees, meet the crew, and get updates." />
 
   <!-- Fonts -->
-  https://fonts.googleapis.com
-  https://fonts.gstatic.com
-  https://fonts.googleapis.com/css2?family=Baloo+2:wght@700&family=Inter:wght@400;600;700&display=swap
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
 
   <!-- Icons -->
-  https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
 
   <!-- anime.js -->
-  https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 
   <style>
     /* ===== Neon Theme (mobile-first) ===== */
@@ -112,9 +112,7 @@
     .hero-badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
     @media (max-width:560px){ .grid{grid-template-columns:1fr} }
 
-    /* ===== Committees (unchanged UI) ===== */
-    .filter-bar{display:flex;gap:8px;align-items:center}
-    .filter-bar select{background:#0e1530;border:1px solid var(--border);border-radius:10px;padding:8px;color:var(--text)}
+    /* ===== Committees — NO DROPDOWN (fixed grid) ===== */
     .committees{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
     @media (min-width:768px){ .committees{grid-template-columns:repeat(4,1fr)} }
     .committee{background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:12px;text-align:center;cursor:pointer}
@@ -122,7 +120,7 @@
     .committee h4{margin:4px 0;font-weight:800}
     .committee p{color:#b9c7de;font-size:.95rem}
 
-    /* ===== Crew (members) — uses your default avatar ===== */
+    /* ===== Crew (members) — dropdown filter ONLY here ===== */
     .crew-filter{display:flex;gap:8px;align-items:center;margin-bottom:8px}
     .crew-filter select{background:#0e1530;border:1px solid var(--border);border-radius:10px;padding:8px;color:var(--text)}
     .crew{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -198,7 +196,7 @@
     <div class="nav-inner container">
       <div class="brand">
         <div class="brand-logo">
-          https://res.cloudinary.com/dx1wxv6ck/image/upload/v1766845182/544806874_18340747831160890_4239570139746452250_n_ob2z58.jpg
+          <img src="https://res.cloudinary.com/dx1wxv6ck/image/upload/v1766845182/544806874_18340747831160890_4239570139746452250_n_ob2z58.jpg" alt="CAT logo"/>
         </div>
         CAT <span>RNSIT</span>
       </div>
@@ -264,27 +262,13 @@
     </div>
   </section>
 
-  <!-- Committees (unchanged UI) -->
+  <!-- Committees — fixed grid -->
   <section class="container" id="committees">
     <h2 class="section-title">CAT Committees</h2>
-    <div class="filter-bar">
-      <label for="committeeFilter" class="terms">Filter</label>
-      <select id="committeeFilter">
-        <option value="all">All</option>
-        <option value="events">Events</option>
-        <option value="dmc">DMC</option>
-        <option value="decor">Decor</option>
-        <option value="sponsorship">Sponsorship</option>
-        <option value="jukebox">Jukebox</option>
-        <option value="disciplinary">Disciplinary</option>
-        <option value="hospitality">Hospitality</option>
-        <option value="pr">PR</option>
-      </select>
-    </div>
     <div class="committees" id="committeesGrid"></div>
   </section>
 
-  <!-- Members (only default avatar changed) -->
+  <!-- Members — dropdown filter ONLY here -->
   <section class="container" id="members">
     <h2 class="section-title">CAT Crew • The Backbone</h2>
     <div class="crew-filter">
@@ -382,7 +366,7 @@
     </div>
   </div>
 
-  <!-- Profile modal (kept same; includes Sign out) -->
+  <!-- Profile modal -->
   <div class="modal" id="profileModal">
     <div class="modal-card" id="profileCard">
       <div class="modal-header">
@@ -430,9 +414,9 @@
     </div>
   </footer>
 
-  <!-- App JS (UI + anime.js + validations + search + animations) -->
+  <!-- App JS -->
   <script>
-    /* ===== Data (unchanged) ===== */
+    /* ===== Data ===== */
     const EVENTS = [
       { id:"beats25", name:"Campus Beats ’25", when:"Jan 28, 2025", where:"Main Stage", type:"Fest", desc:"Music & dance showcase with teams and solo slots.", tags:["Music","Dance","Show"] },
       { id:"dramix",  name:"Dramix – Theatre Night", when:"Feb 14, 2025", where:"Auditorium", type:"Show", desc:"Drama, comedy, improv — stage & crew.", tags:["Theatre","Improv"] },
@@ -614,10 +598,10 @@
       loadMyRegistrations();
     }
 
-    /* ===== Committees render + filter + popup (unchanged logic) ===== */
+    /* ===== Committees render + popup (NO dropdown) ===== */
     const committeesGrid=document.getElementById("committeesGrid");
-    function renderCommittees(list){
-      committeesGrid.innerHTML = list.map(c=>`
+    function renderCommittees(){
+      committeesGrid.innerHTML = COMMITTEES.map(c=>`
         <div class="committee" onclick="openCommittee('${c.id}')">
           <div class="icon"><i class="fa-solid fa-${c.icon}"></i></div>
           <h4>${c.name}</h4>
@@ -626,11 +610,7 @@
       `).join("");
       anime({targets:'#committeesGrid .committee',opacity:[0,1],translateY:[18,0],duration:420,easing:'easeOutQuad',delay:(el,i)=>40*i});
     }
-    renderCommittees(COMMITTEES);
-    document.getElementById('committeeFilter').addEventListener('change', (e)=>{
-      const v=e.target.value;
-      renderCommittees(v==="all"?COMMITTEES:COMMITTEES.filter(c=>c.id===v));
-    });
+    renderCommittees();
     function openCommittee(id){
       const c=COMMITTEES.find(x=>x.id===id); if(!c) return;
       document.getElementById("committeeTitle").innerHTML = `<i class="fa-solid fa-${c.icon}"></i> ${c.name}`;
@@ -644,13 +624,13 @@
       openModal('committeeModal','#committeeCard');
     }
 
-    /* ===== Crew (members) — only avatar changed ===== */
+    /* ===== Crew (members) — dropdown filter ONLY here, with your avatar ===== */
     const membersGrid=document.getElementById("membersGrid");
     const crewFilter = document.getElementById("crewFilter");
     function renderMembers(list){
       membersGrid.innerHTML = list.map(m=>`
         <div class="member">
-          <img src="${DEFAULT_AVATAR}" alt="${m.name}">
+          <img src="${DEFAULT_AVATAR}" alt="${m.name}"/>
           <div class="name">${m.name}</div>
           <div class="role">${m.role}</div>
         </div>
@@ -686,7 +666,7 @@
         {k:/event|register/i, a:"Go to Events → tap Register. USN must look like 1RN24ME015. Pick your department via drawer."},
         {k:/recruit|join/i,   a:"Recruitment opens during drives. Keep an eye on this site and socials."},
         {k:/cancel/i,         a:"Use Manage/Cancel → enter your email → select a reason → Cancel."},
-        {k:/committee|team/i, a:"Open Committees, filter via dropdown, tap any card for responsibilities & tools."},
+        {k:/committee|team/i, a:"Open Committees and tap any card for responsibilities & tools."},
         {k:/contact|help|support/i, a:"Message here or mail cat@rnsit.edu.in. We’ll reach out."},
       ],
       fallback:"Thanks! We’ll contact you soon. For urgent matters, mail cat@rnsit.edu.in."
@@ -731,7 +711,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
-    /* Your Firebase config (unchanged) */
     const firebaseConfig = {
       apiKey: "AIzaSyBcHCDBg7FMk9ItN1851vujLqhQaLQ7wCY",
       authDomain: "cat-rnsit.firebaseapp.com",
@@ -807,10 +786,8 @@
     document.getElementById("saveProfileBtn").addEventListener("click", saveProfile);
     document.getElementById("signOutProfileBtn").addEventListener("click", googleSignOut);
 
-    // Open dropdown menu when clicking user badge
-    userBadge.addEventListener('click', ()=>{
-      userMenu.classList.toggle('open');
-    });
+    // User badge menu
+    userBadge.addEventListener('click', ()=> userMenu.classList.toggle('open'));
     openProfileMenuBtn.addEventListener('click', ()=>{
       userMenu.classList.remove('open');
       const u = auth.currentUser;
@@ -820,7 +797,6 @@
       userMenu.classList.remove('open');
       googleSignOut();
     });
-    // Close menu on outside click
     document.addEventListener('click', (e)=>{
       const within = userBadge.contains(e.target) || userMenu.contains(e.target);
       if(!within) userMenu.classList.remove('open');
