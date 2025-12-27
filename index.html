@@ -18,73 +18,10 @@
   <!-- anime.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 
-  <!-- Firebase v12 Modules (ESM) -->
-  <script type="module" defer>
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
-    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
-
-    // Your Firebase config (already provided)
-    const firebaseConfig = {
-      apiKey: "AIzaSyBcHCDBg7FMk9ItN1851vujLqhQaLQ7wCY",
-      authDomain: "cat-rnsit.firebaseapp.com",
-      projectId: "cat-rnsit",
-      storageBucket: "cat-rnsit.firebasestorage.app",
-      messagingSenderId: "811409086978",
-      appId: "1:811409086978:web:6b085ea58b59e39415651b",
-      measurementId: "G-08WRHKJ4EX"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
-
-    // Buttons
-    const signInBtn  = document.addEventListener('DOMContentLoaded', ()=>{
-      const signInBtn  = document.getElementById("signInBtn");
-      const signOutBtn = document.getElementById("signOutBtn");
-      const userBadge  = document.getElementById("userBadge");
-
-      async function googleSignInStart(){
-        try {
-          const res = await signInWithPopup(auth, provider);
-          const u = res.user;
-          alert(`Welcome ${u.displayName || u.email}`);
-        } catch (e) {
-          alert("Sign-in error: " + e.message);
-          console.error(e);
-        }
-      }
-      async function googleSignOut(){
-        try { await signOut(auth); alert("Signed out"); }
-        catch(e){ alert("Sign-out error: " + e.message); }
-      }
-
-      signInBtn?.addEventListener('click', googleSignInStart);
-      signOutBtn?.addEventListener('click', googleSignOut);
-
-      onAuthStateChanged(auth, (user)=>{
-        if(user){
-          signInBtn.style.display = 'none';
-          signOutBtn.style.display = 'inline-flex';
-          userBadge.innerHTML = `
-            <img src="${user.photoURL || 'https://i.pravatar.cc/48'}" alt="profile" style="width:28px;height:28px;border-radius:50%;border:1px solid var(--border);margin-right:8px">
-            <span>${user.displayName || user.email}</span>
-          `;
-        } else {
-          signOutBtn.style.display = 'none';
-          signInBtn.style.display = 'inline-flex';
-          userBadge.innerHTML = '';
-        }
-      });
-    });
-  </script>
-
   <style>
-    /* ===== THEME PALETTES ===== */
+    /* ===== THEME: Neon (default) ===== */
     :root{
-      /* Neon (default) */
       --bg: #0a0f1d;
-      --bg2:#0d1226;
       --text: #e6eaf7;
       --muted:#b9c7de;
       --card: rgba(255,255,255,0.08);
@@ -107,50 +44,25 @@
       --font-head: "Baloo 2", system-ui, -apple-system, "Segoe UI", Roboto, Inter, "Helvetica Neue", Arial;
       --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Inter, "Helvetica Neue", Arial;
     }
-    /* Pastel Pop */
-    [data-theme="pastel"]{
-      --bg:#f8fafc; --bg2:#ffffff; --text:#162844; --muted:#6b7b93;
-      --card:#ffffff; --glass:rgba(255,255,255,0.85); --border: rgba(23,35,59,0.14);
-      --c1:#B8E6D0; --c2:#A8D8F0; --c3:#FFC7B0; --c4:#D7D3FF; --c5:#FFE9A9;
-      --grad-1: linear-gradient(135deg,var(--c1),var(--c2));
-      --grad-2: linear-gradient(135deg,var(--c3),var(--c4));
-      --grad-3: linear-gradient(135deg,var(--c5),var(--c2));
-      --shadow: 0 18px 48px rgba(23,35,59,0.12);
-    }
-    /* Sunset */
-    [data-theme="sunset"]{
-      --bg:#0a0f1d; --bg2:#121835; --text:#f7f7fb; --muted:#cbd3ea;
-      --card:rgba(255,255,255,0.08); --glass:rgba(255,255,255,0.12); --border:rgba(255,255,255,0.18);
-      --c1:#ff7a7a; --c2:#ffd166; --c3:#ff9f7f; --c4:#64d2ff; --c5:#9a7dff;
-      --grad-1: linear-gradient(135deg,var(--c1),var(--c2));
-      --grad-2: linear-gradient(135deg,var(--c3),var(--c5));
-      --grad-3: linear-gradient(135deg,var(--c2),var(--c4));
-    }
-    /* Cyber */
-    [data-theme="cyber"]{
-      --bg:#06080f; --bg2:#0a0d1a; --text:#eaf2ff; --muted:#a9b7cf;
-      --card:rgba(255,255,255,0.08); --glass:rgba(255,255,255,0.10); --border:rgba(255,255,255,0.16);
-      --c1:#00ffd1; --c2:#00b2ff; --c3:#9a7dff; --c4:#ff4fbf; --c5:#ffd166;
-      --grad-1: linear-gradient(135deg,var(--c1),var(--c2));
-      --grad-2: linear-gradient(135deg,var(--c4),var(--c3));
-      --grad-3: linear-gradient(135deg,var(--c5),var(--c2));
-    }
 
     *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:
-      radial-gradient(1000px 500px at 10% -10%, color-mix(in oklab,var(--c3) 20%, transparent), transparent 60%),
-      radial-gradient(1000px 500px at 90% 110%, color-mix(in oklab,var(--c4) 20%, transparent), transparent 60%),
-      var(--bg);
-      color:var(--text); font-family:var(--font-body); overflow-x:hidden}
+    html,body{
+      margin:0;padding:0;
+      background:
+        radial-gradient(1000px 500px at 10% -10%, rgba(154,125,255,0.18), transparent 60%),
+        radial-gradient(1000px 500px at 90% 110%, rgba(85,255,215,0.18), transparent 60%),
+        var(--bg);
+      color:var(--text); font-family:var(--font-body); overflow-x:hidden
+    }
     a{color:inherit;text-decoration:none}
     img{max-width:100%;display:block}
 
     /* Cursor trail dots */
-    .trail-dot{position:fixed;width:10px;height:10px;border-radius:50%;pointer-events:none;z-index:999;opacity:.75;background:var(--c2);box-shadow:0 8px 16px color-mix(in oklab,var(--c2) 40%, transparent)}
+    .trail-dot{position:fixed;width:10px;height:10px;border-radius:50%;pointer-events:none;z-index:999;opacity:.75;background:var(--c2);box-shadow:0 8px 16px rgba(100,210,255,0.4)}
 
     /* Top progress bar + ring */
     #scrollProgress{position:fixed;top:0;left:0;height:6px;background:var(--grad-1);width:0%;z-index:1000}
-    #scrollRing{position:fixed;top:10px;right:12px;width:44px;height:44px;border-radius:50%;background:conic-gradient(var(--c2) 0% 0%, #1c2b49 0% 100%);display:grid;place-items:center;font-size:.75rem;color:#cfe1ff;z-index:1000;border:1px solid var(--border);backdrop-filter:blur(6px)}
+    #scrollRing{position:fixed;top:10px;right:12px;width:44px;height:44px;border-radius:50%;background:conic-gradient(var(--c2) 0% 0%, #1c2b49 0% 100%);display:grid;place-items:center;font-size:.75rem;color:#cfe1ff;z-index:1000;border:1px solid var(--border);backdrop-filter:blur(6px}
     #scrollPct{filter:drop-shadow(0 8px 16px rgba(0,0,0,0.25))}
 
     /* Left timeline */
@@ -158,7 +70,7 @@
     .dot{width:12px;height:12px;border-radius:50%;background:#1c2b49;border:1px solid var(--border);box-shadow:var(--shadow);transition:transform .25s ease, background .25s ease}
     .dot.active{background:var(--c2); transform:scale(1.15)}
 
-    /* Stickers (real SVG) */
+    /* Stickers (SVG) */
     .sticker{position:fixed;z-index:-1;opacity:.6}
     .sticker svg{filter:drop-shadow(0 8px 16px rgba(0,0,0,0.35))}
     .s1{top:6%; left:-40px; width:160px}
@@ -176,7 +88,7 @@
     /* Nav */
     .nav{position:sticky;top:54px;z-index:50;width:min(1200px,92%);margin:18px auto;background:var(--glass);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:space-between;padding:12px 16px}
     .brand{font-family:var(--font-head);font-weight:700;display:flex;align-items:center;gap:10px}
-    .brand-logo{width:34px;height:34px;border-radius:12px;background:var(--grad-2);box-shadow:0 0 22px color-mix(in oklab,var(--c3) 50%, transparent)}
+    .brand-logo{width:34px;height:34px;border-radius:12px;background:var(--grad-2);box-shadow:0 0 22px rgba(154,125,255,0.5)}
     .brand span{background:var(--grad-1);-webkit-background-clip:text;background-clip:text;color:transparent}
     .nav ul{display:flex;gap:16px;list-style:none;margin:0;padding:0}
     .nav a{padding:10px 12px;border-radius:10px;color:#b9c7de}
@@ -186,12 +98,6 @@
     .btn-primary{background:var(--grad-1);color:#0a0f1d;font-weight:800}
     .btn-outline{background:var(--card);color:var(--text);font-weight:700}
     .btn:hover{box-shadow:0 12px 20px rgba(0,0,0,0.35)}
-    .palette{display:flex;gap:8px;align-items:center}
-    .swatch{width:24px;height:24px;border-radius:50%;border:1px solid var(--border);cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,0.25)}
-    .swatch[data-theme="neon"]{background:linear-gradient(135deg,#ff5bd4,#9a7dff)}
-    .swatch[data-theme="pastel"]{background:linear-gradient(135deg,#B8E6D0,#A8D8F0)}
-    .swatch[data-theme="sunset"]{background:linear-gradient(135deg,#ff7a7a,#ffd166)}
-    .swatch[data-theme="cyber"]{background:linear-gradient(135deg,#00ffd1,#00b2ff)}
     #userBadge{display:inline-flex;align-items:center;color:#cfe1ff;font-weight:700}
 
     /* Hero */
@@ -272,7 +178,7 @@
     @media (max-width:680px){.grid{grid-template-columns:1fr}.committees{grid-template-columns:1fr}}
   </style>
 </head>
-<body data-theme="neon">
+<body>
 
   <!-- Cursor trail root -->
   <div id="trailRoot" aria-hidden="true"></div>
@@ -334,12 +240,6 @@
       <li><a href="#contact">Contact</a></li>
     </ul>
     <div class="actions">
-      <div class="palette" title="Theme">
-        <div class="swatch" data-theme="neon"   aria-label="Neon"></div>
-        <div class="swatch" data-theme="pastel" aria-label="Pastel"></div>
-        <div class="swatch" data-theme="sunset" aria-label="Sunset"></div>
-        <div class="swatch" data-theme="cyber"  aria-label="Cyber"></div>
-      </div>
       <span id="userBadge"></span>
       <button id="signInBtn" class="btn btn-outline"><i class="fa-brands fa-google"></i> Sign in</button>
       <button id="signOutBtn" class="btn btn-outline" style="display:none"><i class="fa-solid fa-right-from-bracket"></i> Sign out</button>
@@ -368,8 +268,8 @@
       <p class="sub">Upcoming fests, workshops, and campus shows — live ticker on top and full list below.</p>
       <div class="hero-badges">
         <span class="badge">Digital stickers</span>
-        <span class="badge">Palette switch</span>
         <span class="badge">Confetti success</span>
+        <span class="badge">Vibrant palettes</span>
       </div>
     </div>
   </section>
@@ -452,7 +352,7 @@
     </div>
   </section>
 
-  <!-- Modals: Newsletter / Register / Terms / Committee -->
+  <!-- Modals -->
   <div class="modal" id="newsletterModal">
     <div class="modal-card" id="newsletterCard">
       <div class="modal-header">
@@ -533,20 +433,21 @@
     </div>
   </footer>
 
-  <!-- App JS (anime.js interactions) -->
+  <!-- App JS -->
   <script>
     /* ===== DATA ===== */
-    const RECRUITMENT_OPEN = false; // set true during drives
+    const RECRUITMENT_OPEN = false; // toggle true during drives
+
     const EVENTS = [
-      { id:"beats25", name:"Campus Beats ’25", when:"Jan 28, 2025", where:"Main Stage", type:"Fest", desc:"Music & dance showcase with teams and solo slots.", tags:["Music","Dance","Show"], upcoming:true },
-      { id:"dramix",  name:"Dramix – Theatre Night", when:"Feb 14, 2025", where:"Auditorium", type:"Show", desc:"Drama, comedy, improv — stage & crew.", tags:["Theatre","Improv"], upcoming:true },
-      { id:"artjam",  name:"ArtJam – Pop Art Workshop", when:"Feb 28, 2025", where:"Courtyard", type:"Workshop", desc:"Campus artists leading hands-on sessions.", tags:["Art","Workshop"], upcoming:true },
-      { id:"battle",  name:"Beat Battle – DJ vs DJ", when:"Mar 8, 2025", where:"Open Arena", type:"Battle", desc:"Live crowd vote. Limited slots.", tags:["DJ","Battle"], upcoming:true },
+      { id:"beats25", name:"Campus Beats ’25", when:"Jan 28, 2025", where:"Main Stage", type:"Fest", desc:"Music & dance showcase with teams and solo slots.", tags:["Music","Dance","Show"] },
+      { id:"dramix",  name:"Dramix – Theatre Night", when:"Feb 14, 2025", where:"Auditorium", type:"Show", desc:"Drama, comedy, improv — stage & crew.", tags:["Theatre","Improv"] },
+      { id:"artjam",  name:"ArtJam – Pop Art Workshop", when:"Feb 28, 2025", where:"Courtyard", type:"Workshop", desc:"Campus artists leading hands-on sessions.", tags:["Art","Workshop"] },
+      { id:"battle",  name:"Beat Battle – DJ vs DJ", when:"Mar 8, 2025", where:"Open Arena", type:"Battle", desc:"Live crowd vote. Limited slots.", tags:["DJ","Battle"] },
     ];
 
     const COMMITTEES = [
       { id:"events",        name:"Events",        icon:"calendar-check",        intro:"Plans & runs shows, fests, workshops end-to-end.", focus:["Program curation","Stage flow & emcee","Registrations & rosters","Run sheets & timing"], tools:["Sheets/Forms","Cue lists","Stage timers"] },
-      { id:"dmc",           name:"DMC",           icon:"camera",                intro:"Design & Media Cell – creatives, photo/video coverage.", focus:["Branding & posters","Photography & Reels","After-movies","Social content"], tools:["Canva/Figma","DSLR/Gimbal","Premiere/CapCut"] },
+      { id:"dmc",           name:"DMC (Design & Media)", icon:"camera",         intro:"Creatives, photo/video coverage, content.", focus:["Branding & posters","Photography & Reels","After-movies","Social content"], tools:["Canva/Figma","DSLR/Gimbal","Premiere/CapCut"] },
       { id:"decor",         name:"Decor",         icon:"wand-magic-sparkles",   intro:"Stage design, props, installations, ambience.", focus:["Stage layout","Props & signage","Art walls","Thematic sets"], tools:["Craft & paint","Foamboard/LEDs","Logistics support"] },
       { id:"sponsorship",   name:"Sponsorship",   icon:"handshake-angle",       intro:"Partners, budget & sponsor deliverables.", focus:["Prospecting","Pitches & decks","Negotiations","Benefits tracking"], tools:["CRM sheets","Email templates","MoUs"] },
       { id:"jukebox",       name:"Jukebox",       icon:"music",                 intro:"Music programming, sound, playlists & vibes.", focus:["Setlists","Sound checks","DJ coordination","Live mixes"], tools:["DAWs","Controllers","Mixers & mics"] },
@@ -570,80 +471,49 @@
     /* ===== YEAR ===== */
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    /* ===== Hero title per-letter ===== */
+    /* ===== Hero per-letter ===== */
     const heroTitle = document.getElementById('heroTitle');
     heroTitle.innerHTML = heroTitle.textContent.split('').map(ch => `<span class="letter">${ch}</span>`).join('');
-    anime.timeline({loop:false})
-      .add({
-        targets: '#heroTitle .letter',
-        translateY: [50,0],
-        opacity: [0,1],
-        easing: 'easeOutExpo',
-        duration: 650,
-        delay: (el, i) => 18*i
-      });
+    anime.timeline({loop:false}).add({
+      targets: '#heroTitle .letter',
+      translateY: [50,0],
+      opacity: [0,1],
+      easing: 'easeOutExpo',
+      duration: 650,
+      delay: (el, i) => 18*i
+    });
 
     /* ===== Cursor trail ===== */
-    const trailRoot = document.getElementById('trailRoot');
-    const trailDots = [];
-    for(let i=0;i<12;i++){
-      const d = document.createElement('div');
-      d.className = 'trail-dot';
-      d.style.background = i%2 ? 'var(--c3)' : 'var(--c2)';
-      trailRoot.appendChild(d); trailDots.push(d);
-    }
-    let mouse = {x:window.innerWidth/2, y:window.innerHeight/2};
-    window.addEventListener('mousemove', e => { mouse.x=e.clientX; mouse.y=e.clientY; });
-    trailDots.forEach((dot,i)=>{
-      anime({targets: dot, translateX: ()=>mouse.x, translateY: ()=>mouse.y, scale: [0.9,1.1], direction:'alternate', easing:'easeOutQuad', duration: 500 + i*40, loop:true});
-    });
+    const trailRoot = document.getElementById('trailRoot'); const trailDots=[];
+    for(let i=0;i<12;i++){ const d=document.createElement('div'); d.className='trail-dot'; d.style.background=i%2?'var(--c3)':'var(--c2)'; trailRoot.appendChild(d); trailDots.push(d); }
+    let mouse={x:innerWidth/2,y:innerHeight/2}; window.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;});
+    trailDots.forEach((dot,i)=>anime({targets:dot,translateX:()=>mouse.x,translateY:()=>mouse.y,scale:[0.9,1.1],direction:'alternate',easing:'easeOutQuad',duration:500+i*40,loop:true}));
 
     /* ===== Scroll progress + ring ===== */
     function updateScroll(){
-      const doc = document.documentElement;
-      const top = doc.scrollTop || document.body.scrollTop;
-      const max = doc.scrollHeight - doc.clientHeight;
-      const pct = max ? Math.round(top / max * 100) : 0;
-      anime({targets:'#scrollProgress', width: `${pct}%`, duration: 150, easing:'linear'});
-      document.getElementById('scrollRing').style.background = `conic-gradient(var(--c2) 0% ${pct}%, #1c2b49 ${pct}% 100%)`;
-      document.getElementById('scrollPct').textContent = `${pct}%`;
-    }
-    window.addEventListener('scroll', updateScroll);
-    window.addEventListener('load', updateScroll);
+      const doc=document.documentElement; const top=doc.scrollTop||document.body.scrollTop; const max=doc.scrollHeight-doc.clientHeight; const pct = max?Math.round(top/max*100):0;
+      anime({targets:'#scrollProgress', width:`${pct}%`, duration:150, easing:'linear'});
+      document.getElementById('scrollRing').style.background=`conic-gradient(var(--c2) 0% ${pct}%, #1c2b49 ${pct}% 100%)`;
+      document.getElementById('scrollPct').textContent=`${pct}%`;
+    } window.addEventListener('scroll',updateScroll); window.addEventListener('load',updateScroll);
 
     /* ===== Section dots ===== */
-    const sectionMap = [
-      {id:'hero', dot:'dot-hero'},
-      {id:'events', dot:'dot-events'},
-      {id:'recruitment', dot:'dot-recruitment'},
-      {id:'committees', dot:'dot-committees'},
-      {id:'members', dot:'dot-members'},
-      {id:'contact', dot:'dot-contact'},
-    ];
-    const observer = new IntersectionObserver(entries=>{
-      entries.forEach(entry=>{
-        const cfg = sectionMap.find(s=>s.id===entry.target.id);
-        if(!cfg) return;
-        const dot = document.getElementById(cfg.dot);
-        if(entry.isIntersecting) dot.classList.add('active'); else dot.classList.remove('active');
-      });
-    }, {threshold:0.35});
-    sectionMap.forEach(s=>{ const el=document.getElementById(s.id); if(el) observer.observe(el); });
+    const sectionMap=[{id:'hero',dot:'dot-hero'},{id:'events',dot:'dot-events'},{id:'recruitment',dot:'dot-recruitment'},{id:'committees',dot:'dot-committees'},{id:'members',dot:'dot-members'},{id:'contact',dot:'dot-contact'}];
+    const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{const cfg=sectionMap.find(s=>s.id===entry.target.id); if(!cfg) return; const dot=document.getElementById(cfg.dot); if(entry.isIntersecting) dot.classList.add('active'); else dot.classList.remove('active');});},{threshold:0.35});
+    sectionMap.forEach(s=>{const el=document.getElementById(s.id); if(el) observer.observe(el);});
 
     /* ===== Ticker ===== */
     function renderTicker(){
-      const itemsEl = document.getElementById("tickerItems");
+      const itemsEl=document.getElementById("tickerItems");
       const items = EVENTS.map(ev => `<span class="ticker-item"><i class="fa-solid fa-star"></i> <strong>${ev.name}</strong> • ${ev.when} @ ${ev.where}</span>`).join("");
       itemsEl.innerHTML = items + items + items;
-      const track = document.getElementById("tickerTrack");
-      const anim = anime({targets: track, translateX: ['0%', '-50%'], duration: 22000, easing: 'linear', loop: true, autoplay: true});
-      track.addEventListener('mouseenter', ()=> anim.pause());
-      track.addEventListener('mouseleave', ()=> anim.play());
-    }
-    renderTicker();
+      const track=document.getElementById("tickerTrack");
+      const anim=anime({targets:track,translateX:['0%','-50%'],duration:22000,easing:'linear',loop:true,autoplay:true});
+      track.addEventListener('mouseenter',()=>anim.pause()); track.addEventListener('mouseleave',()=>anim.play());
+    } renderTicker();
 
     /* ===== Events grid ===== */
-    const grid = document.getElementById("eventsGrid");
+    const grid=document.getElementById("eventsGrid");
     function pill(tags){ return tags.map(t=>`<span class="badge">${t}</span>`).join(" "); }
     function renderEvents(){
       grid.innerHTML = EVENTS.map(ev=>`
@@ -657,53 +527,44 @@
           </div>
         </div>
       `).join("");
-      anime({targets:'#eventsGrid .card', opacity:[0,1], translateY:[24,0], duration:500, easing:'easeOutQuad', delay:(el,i)=>60*i});
-    }
-    renderEvents();
+      anime({targets:'#eventsGrid .card',opacity:[0,1],translateY:[24,0],duration:500,easing:'easeOutQuad',delay:(el,i)=>60*i});
+    } renderEvents();
 
     /* ===== Register + confetti ===== */
     let currentEventId=null;
     function openRegister(id){
       currentEventId=id;
-      const ev = EVENTS.find(e=>e.id===id);
+      const ev=EVENTS.find(e=>e.id===id);
       document.getElementById("regEventName").innerHTML = `<strong>Event:</strong> ${ev.name} • <em>${ev.when} @ ${ev.where}</em>`;
       openModal('registerModal','#registerCard');
     }
     function confettiBurst(x,y){
-      for(let i=0;i<20;i++){
-        const s = document.createElement('span');
-        s.style.position='fixed'; s.style.left=x+'px'; s.style.top=y+'px';
-        s.textContent = ['🎉','✨','⭐','🌟','💫'][Math.floor(Math.random()*5)];
-        s.style.zIndex=1000;
-        document.body.appendChild(s);
-        anime({targets:s, translateX:(Math.random()*120-60), translateY:(Math.random()*-140-40), opacity:[1,0], duration:900, easing:'easeOutCubic', complete:()=>s.remove()});
+      for(let i=0;i<22;i++){
+        const s=document.createElement('span'); s.style.position='fixed'; s.style.left=x+'px'; s.style.top=y+'px'; s.textContent=['🎉','✨','⭐','🌟','💫'][Math.floor(Math.random()*5)]; s.style.zIndex=1000; document.body.appendChild(s);
+        anime({targets:s,translateX:(Math.random()*140-70),translateY:(Math.random()*-160-60),opacity:[1,0],duration:950,easing:'easeOutCubic',complete:()=>s.remove()});
       }
     }
     function submitRegistration(){
-      const name = document.getElementById("regName").value.trim();
-      const email = document.getElementById("regEmail").value.trim();
-      const usn = document.getElementById("regUSN").value.trim();
-      const dept = document.getElementById("regDept").value.trim();
-      const notes = document.getElementById("regNotes").value.trim();
-      const status = document.getElementById("regStatus");
-      if(!name || !email || !usn || !dept){ status.textContent="Please fill all required fields."; return; }
-      const ev = EVENTS.find(e=>e.id===currentEventId);
-      const entry = {id:crypto.randomUUID(), eventId:ev.id, eventName:ev.name, name, email, usn, dept, notes, ts:Date.now(), status:"Active"};
-      const store = JSON.parse(localStorage.getItem("catRegs")||"[]"); store.push(entry);
-      localStorage.setItem("catRegs", JSON.stringify(store));
-      status.textContent = "Registered! You’ll receive updates via email.";
-      confettiBurst(window.innerWidth/2, window.innerHeight/2);
-      setTimeout(()=> closeModal('registerModal'), 950);
+      const name=document.getElementById("regName").value.trim();
+      const email=document.getElementById("regEmail").value.trim();
+      const usn=document.getElementById("regUSN").value.trim();
+      const dept=document.getElementById("regDept").value.trim();
+      const notes=document.getElementById("regNotes").value.trim();
+      const status=document.getElementById("regStatus");
+      if(!name||!email||!usn||!dept){ status.textContent="Please fill all required fields."; return; }
+      const ev=EVENTS.find(e=>e.id===currentEventId);
+      const entry={id:crypto.randomUUID(),eventId:ev.id,eventName:ev.name,name,email,usn,dept,notes,ts:Date.now(),status:"Active"};
+      const store=JSON.parse(localStorage.getItem("catRegs")||"[]"); store.push(entry); localStorage.setItem("catRegs", JSON.stringify(store));
+      status.textContent="Registered! You’ll receive updates via email."; confettiBurst(innerWidth/2, innerHeight/2); setTimeout(()=>closeModal('registerModal'),950);
     }
 
     /* ===== Manage / Cancel ===== */
     function loadMyRegistrations(){
-      const email = document.getElementById("manageEmail").value.trim();
-      const wrap = document.getElementById("myRegs");
-      wrap.innerHTML = "";
-      if(!email){ wrap.innerHTML = `<div class="terms">Enter your email above.</div>`; return; }
-      const store = JSON.parse(localStorage.getItem("catRegs")||"[]").filter(r=>r.email===email);
-      if(store.length===0){ wrap.innerHTML = `<div class="terms">No registrations found for ${email}.</div>`; return; }
+      const email=document.getElementById("manageEmail").value.trim();
+      const wrap=document.getElementById("myRegs"); wrap.innerHTML="";
+      if(!email){ wrap.innerHTML=`<div class="terms">Enter your email above.</div>`; return; }
+      const store=JSON.parse(localStorage.getItem("catRegs")||"[]").filter(r=>r.email===email);
+      if(store.length===0){ wrap.innerHTML=`<div class="terms">No registrations found for ${email}.</div>`; return; }
       wrap.innerHTML = store.map(r=>`
         <div class="list-item">
           <strong>${r.eventName}</strong><br>
@@ -720,45 +581,34 @@
           </div>
         </div>
       `).join("");
-      anime({targets:'#myRegs .list-item', opacity:[0,1], translateY:[16,0], duration:400, easing:'easeOutQuad', delay:(el,i)=>40*i});
+      anime({targets:'#myRegs .list-item',opacity:[0,1],translateY:[16,0],duration:400,easing:'easeOutQuad',delay:(el,i)=>40*i});
     }
     function cancelReg(id){
-      const store = JSON.parse(localStorage.getItem("catRegs")||"[]");
-      const idx = store.findIndex(r=>r.id===id); if(idx<0) return;
-      const reasonSel = document.getElementById(`reason-${id}`);
-      const reason = reasonSel?.value || "";
+      const store=JSON.parse(localStorage.getItem("catRegs")||"[]");
+      const idx=store.findIndex(r=>r.id===id); if(idx<0) return;
+      const reasonSel=document.getElementById(`reason-${id}`); const reason=reasonSel?.value||"";
       if(!reason){ alert("Please select a cancellation reason."); return; }
-      store[idx].status = "Cancelled"; store[idx].cancelReason = reason;
-      localStorage.setItem("catRegs", JSON.stringify(store));
-      loadMyRegistrations();
-      alert("Your registration has been cancelled under CAT terms. You’ll get a confirmation mail.");
+      store[idx].status="Cancelled"; store[idx].cancelReason=reason; localStorage.setItem("catRegs", JSON.stringify(store)); loadMyRegistrations(); alert("Your registration has been cancelled under CAT terms. You’ll get a confirmation mail.");
     }
 
     /* ===== Recruitment ===== */
-    const statusEl = document.getElementById("recruitmentStatus");
-    const formWrap = document.getElementById("recruitmentFormWrap");
-    if(RECRUITMENT_OPEN){
-      statusEl.innerHTML = `<i class="fa-solid fa-bolt"></i> Recruitment open now`;
-      formWrap.style.display="block";
-      anime({targets:'#recruitmentFormWrap', opacity:[0,1], translateY:[16,0], duration:400, easing:'easeOutQuad'});
-    }
+    const statusEl=document.getElementById("recruitmentStatus"); const formWrap=document.getElementById("recruitmentFormWrap");
+    if(RECRUITMENT_OPEN){ statusEl.innerHTML=`<i class="fa-solid fa-bolt"></i> Recruitment open now`; formWrap.style.display="block"; anime({targets:'#recruitmentFormWrap',opacity:[0,1],translateY:[16,0],duration:400,easing:'easeOutQuad'}); }
     function submitRecruitment(){
-      const rName = document.getElementById("rName").value.trim();
-      const rEmail = document.getElementById("rEmail").value.trim();
-      const rYear = document.getElementById("rYear").value.trim();
-      const rDept = document.getElementById("rDept").value.trim();
-      const rMotivation = document.getElementById("rMotivation").value.trim();
-      const rStatus = document.getElementById("rStatus");
-      if(!rName || !rEmail || !rYear || !rDept){ rStatus.textContent="Fill all required fields."; return; }
-      const store = JSON.parse(localStorage.getItem("catRecruit")||"[]");
-      store.push({id:crypto.randomUUID(), rName, rEmail, rYear, rDept, rMotivation, ts:Date.now(), status:"Submitted"});
-      localStorage.setItem("catRecruit", JSON.stringify(store));
-      rStatus.textContent = "Application submitted. Verification will follow via email.";
-      confettiBurst(window.innerWidth-120, 120);
+      const rName=document.getElementById("rName").value.trim();
+      const rEmail=document.getElementById("rEmail").value.trim();
+      const rYear=document.getElementById("rYear").value.trim();
+      const rDept=document.getElementById("rDept").value.trim();
+      const rMotivation=document.getElementById("rMotivation").value.trim();
+      const rStatus=document.getElementById("rStatus");
+      if(!rName||!rEmail||!rYear||!rDept){ rStatus.textContent="Fill all required fields."; return; }
+      const store=JSON.parse(localStorage.getItem("catRecruit")||"[]");
+      store.push({id:crypto.randomUUID(), rName, rEmail, rYear, rDept, rMotivation, ts:Date.now(), status:"Submitted"}); localStorage.setItem("catRecruit", JSON.stringify(store));
+      rStatus.textContent="Application submitted. Verification will follow via email."; confettiBurst(innerWidth-120, 120);
     }
 
-    /* ===== Committees ===== */
-    const committeesGrid = document.getElementById("committeesGrid");
+    /* ===== Committees (FIX: correct template quotes) ===== */
+    const committeesGrid=document.getElementById("committeesGrid");
     function renderCommittees(){
       committeesGrid.innerHTML = COMMITTEES.map(c=>`
         <div class="committee" onclick="openCommittee('${c.id}')">
@@ -766,16 +616,15 @@
           <h4>${c.name}</h4>
           <p>Tap to learn more</p>
         </div>
-      `).join("");
-      anime({targets:'#committeesGrid .committee', opacity:[0,1], scale:[0.98,1], duration:450, easing:'easeOutQuad', delay:(el,i)=>60*i});
-    }
-    renderCommittees();
+      `).join(""); /* <-- correct backticks ensure rendering */
+      anime({targets:'#committeesGrid .committee',opacity:[0,1],scale:[0.98,1],duration:450,easing:'easeOutQuad',delay:(el,i)=>60*i});
+    } renderCommittees();
 
     function openCommittee(id){
-      const c = COMMITTEES.find(x=>x.id===id); if(!c) return;
+      const c=COMMITTEES.find(x=>x.id===id); if(!c) return;
       document.getElementById("committeeTitle").innerHTML = `<i class="fa-solid fa-${c.icon}"></i> ${c.name}`;
-      const focusList = c.focus.map(f=>`<li>${f}</li>`).join("");
-      const toolsList = c.tools.map(t=>`<li>${t}</li>`).join("");
+      const focusList=c.focus.map(f=>`<li>${f}</li>`).join("");
+      const toolsList=c.tools.map(t=>`<li>${t}</li>`).join("");
       document.getElementById("committeeBody").innerHTML = `
         <p class="terms" style="margin-bottom:12px">${c.intro}</p>
         <div class="hero-card"><h4 style="margin:0 0 8px">Core responsibilities</h4><ul>${focusList}</ul></div>
@@ -785,7 +634,7 @@
     }
 
     /* ===== Members carousel ===== */
-    const membersTrack = document.getElementById("membersTrack");
+    const membersTrack=document.getElementById("membersTrack");
     function renderMembers(){
       membersTrack.innerHTML = MEMBERS.map(m=>`
         <div class="member">
@@ -794,79 +643,135 @@
           <div class="role">${m.role}</div>
         </div>
       `).join("");
-      let width = membersTrack.scrollWidth - membersTrack.clientWidth;
-      const anim = anime({targets: {pos:0}, pos: width, duration: 28000, easing: 'linear', loop: true, update: a => { membersTrack.scrollLeft = a.animations[0].currentValue; }});
-      membersTrack.addEventListener('mouseenter', ()=> anim.pause());
-      membersTrack.addEventListener('mouseleave', ()=> anim.play());
-      window.addEventListener('resize', ()=> { width = membersTrack.scrollWidth - membersTrack.clientWidth; anim.restart(); });
-    }
-    renderMembers();
+      let width=membersTrack.scrollWidth - membersTrack.clientWidth;
+      const anim=anime({targets:{pos:0},pos:width,duration:28000,easing:'linear',loop:true,update:a=>{membersTrack.scrollLeft=a.animations[0].currentValue;}});
+      membersTrack.addEventListener('mouseenter',()=>anim.pause()); membersTrack.addEventListener('mouseleave',()=>anim.play());
+      addEventListener('resize',()=>{width=membersTrack.scrollWidth - membersTrack.clientWidth; anim.restart();});
+    } renderMembers();
 
     /* ===== Contact ===== */
     function submitContact(){
-      const n = document.getElementById("cName").value.trim();
-      const e = document.getElementById("cEmail").value.trim();
-      const t = document.getElementById("cTopic").value.trim();
-      const m = document.getElementById("cMsg").value.trim();
-      const s = document.getElementById("cStatus");
-      if(!n || !e || !m){ s.textContent="Please fill the required fields."; return; }
-      const store = JSON.parse(localStorage.getItem("catContact")||"[]");
-      store.push({id:crypto.randomUUID(), n,e,t,m, ts:Date.now()});
-      localStorage.setItem("catContact", JSON.stringify(store));
-      s.textContent = "Sent! CAT team will reach out.";
-      anime({targets: '.chat-launch', scale:[1,1.08,1], duration:600, easing:'easeInOutQuad'});
+      const n=document.getElementById("cName").value.trim();
+      const e=document.getElementById("cEmail").value.trim();
+      const t=document.getElementById("cTopic").value.trim();
+      const m=document.getElementById("cMsg").value.trim();
+      const s=document.getElementById("cStatus");
+      if(!n||!e||!m){ s.textContent="Please fill the required fields."; return; }
+      const store=JSON.parse(localStorage.getItem("catContact")||"[]"); store.push({id:crypto.randomUUID(),n,e,t,m,ts:Date.now()}); localStorage.setItem("catContact", JSON.stringify(store));
+      s.textContent="Sent! CAT team will reach out."; anime({targets:'.chat-launch',scale:[1,1.08,1],duration:600,easing:'easeInOutQuad'});
     }
 
     /* ===== Newsletter ===== */
     function subscribeNewsletter(){
-      const email = document.getElementById("nEmail").value.trim();
-      const err = document.getElementById("nError"); err.textContent="";
+      const email=document.getElementById("nEmail").value.trim();
+      const err=document.getElementById("nError"); err.textContent="";
       if(!email || !email.includes("@")){ err.textContent="Enter a valid email."; return; }
-      const store = JSON.parse(localStorage.getItem("catNews")||"[]");
+      const store=JSON.parse(localStorage.getItem("catNews")||"[]");
       if(store.includes(email)){ err.textContent="Already subscribed."; return; }
       store.push(email); localStorage.setItem("catNews", JSON.stringify(store));
-      closeModal('newsletterModal');
-      alert("Subscribed! You’ll receive CAT newsletters.");
+      closeModal('newsletterModal'); alert("Subscribed! You’ll receive CAT newsletters.");
     }
 
-    /* ===== Chat ===== */
+    /* ===== Chat (AI‑lite) ===== */
     function toggleChat(open){ document.getElementById("chatBox").classList.toggle("open", open); }
     document.getElementById("chatOpen").addEventListener("click", ()=> toggleChat(true));
-    function sendChat(){
-      const input = document.getElementById("chatInput");
-      const msg = input.value.trim(); if(!msg) return;
-      const body = document.getElementById("chatBody");
-      body.insertAdjacentHTML("beforeend", `<div class="bubble me">${msg}</div>`); input.value=""; body.scrollTop = body.scrollHeight;
-      setTimeout(()=>{ body.insertAdjacentHTML("beforeend", `<div class="bubble">Thanks! We’ll contact you soon. For urgent matters, mail <strong>cat@rnsit.edu.in</strong>.</div>`); body.scrollTop = body.scrollHeight; }, 650);
+    const BOT = {
+      rules: [
+        {k:/event/i,     a:"You can register under ‘Active & Upcoming Events’. If you face issues, tell me the event name."},
+        {k:/recruit/i,   a:"Recruitment opens during drives. Fill the form in the Recruitment section when it’s open."},
+        {k:/cancel/i,    a:"Use ‘Manage / Cancel’ with your email, select a reason, then hit Cancel."},
+        {k:/committee/i, a:"Click any committee card to see its responsibilities and tools."},
+        {k:/contact/i,   a:"Share your query here or mail cat@rnsit.edu.in. CAT leads will reach out."},
+      ],
+      fallback:"Got it! CAT team will contact you soon. For urgent matters, mail cat@rnsit.edu.in."
+    };
+    async function sendChat(){
+      const input=document.getElementById("chatInput"); const msg=input.value.trim(); if(!msg) return;
+      const body=document.getElementById("chatBody");
+      body.insertAdjacentHTML("beforeend", `<div class="bubble me">${msg}</div>`); input.value=""; body.scrollTop=body.scrollHeight;
+      // AI‑lite (rule-based). Plug in real AI by calling your endpoint here:
+      // const res = await fetch("https://your-backend.example/api/chat", {method:"POST", body:JSON.stringify({q:msg})}); const data = await res.json(); body.insertAdjacentHTML("beforeend", `<div class="bubble">${data.answer}</div>`);
+      const hit = BOT.rules.find(r=>r.k.test(msg));
+      const reply = hit ? hit.a : BOT.fallback;
+      setTimeout(()=>{ body.insertAdjacentHTML("beforeend", `<div class="bubble">${reply}</div>`); body.scrollTop=body.scrollHeight; }, 600);
     }
 
     /* ===== Modals ===== */
     function openModal(id, cardSel){
-      const modal = document.getElementById(id);
-      modal.classList.add('open');
-      anime.set(cardSel, {scale:0.96, opacity:0, translateY:16});
-      anime({targets:cardSel, scale:1, opacity:1, translateY:0, duration:280, easing:'easeOutQuad'});
-      modal.addEventListener('click', (e)=>{ if(e.target===modal) closeModal(id); });
+      const modal=document.getElementById(id); modal.classList.add('open');
+      anime.set(cardSel,{scale:0.96,opacity:0,translateY:16}); anime({targets:cardSel,scale:1,opacity:1,translateY:0,duration:280,easing:'easeOutQuad'});
+      modal.addEventListener('click',(e)=>{ if(e.target===modal) closeModal(id); });
     }
     function closeModal(id){
-      const modal = document.getElementById(id);
-      const card = modal.querySelector('.modal-card');
-      anime({targets:card, scale:0.96, opacity:0, translateY:16, duration:220, easing:'easeInQuad', complete:()=>modal.classList.remove('open')});
+      const modal=document.getElementById(id); const card=modal.querySelector('.modal-card');
+      anime({targets:card,scale:0.96,opacity:0,translateY:16,duration:220,easing:'easeInQuad',complete:()=>modal.classList.remove('open')});
     }
 
-    /* ===== Theme switch ===== */
-    document.querySelectorAll('.swatch').forEach(s=>{
-      s.addEventListener('click', ()=>{
-        const theme = s.getAttribute('data-theme');
-        document.body.setAttribute('data-theme', theme);
-        anime({targets:'body', opacity:[0.96,1], duration:300});
-      });
-    });
-
-    /* ===== Link newsletter modal sign-in button to navbar sign-in ===== */
+    /* ===== Link newsletter modal sign-in to nav sign-in ===== */
     document.getElementById('signInBtnModal').addEventListener('click', ()=>{
       document.getElementById('newsletterModal').classList.remove('open');
       document.getElementById('signInBtn').click();
+    });
+  </script>
+
+  <!-- Firebase Auth (ES Modules) — placed at end so DOM is ready -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+    import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+
+    // Your Firebase config (from your message)
+    const firebaseConfig = {
+      apiKey: "AIzaSyBcHCDBg7FMk9ItN1851vujLqhQaLQ7wCY",
+      authDomain: "cat-rnsit.firebaseapp.com",
+      projectId: "cat-rnsit",
+      storageBucket: "cat-rnsit.firebasestorage.app",
+      messagingSenderId: "811409086978",
+      appId: "1:811409086978:web:6b085ea58b59e39415651b",
+      measurementId: "G-08WRHKJ4EX"
+    };
+
+    // Init
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+    // provider.setCustomParameters({ hd: "rnsit.edu.in" }); // optional hint for campus domain
+
+    const signInBtn  = document.getElementById("signInBtn");
+    const signOutBtn = document.getElementById("signOutBtn");
+    const userBadge  = document.getElementById("userBadge");
+
+    async function googleSignInStart(){
+      try {
+        const res = await signInWithPopup(auth, provider);
+        const u = res.user;
+        userBadge.innerHTML = u.photoURL
+          ? `<img src="${u.photoURL}" alt="avatar" style="width:28px;height:28px;border-radius:50%;margin-right:8px;border:1px solid var(--border)"> <span>${u.displayName || u.email}</span>`
+          : `<span>${u.displayName || u.email}</span>`;
+      } catch (e) {
+        // Show helpful instructions on unauthorized-domain
+        if (String(e.code).includes("auth/unauthorized-domain")) {
+          alert("Sign-in blocked: unauthorized domain.\nFix: Firebase Console → Authentication → Settings → Authorized domains → add your site domain (e.g., cat-rnsit.pages.dev).");
+        } else {
+          alert("Sign-in error: " + e.message);
+        }
+        console.error(e);
+      }
+    }
+    async function googleSignOut(){
+      try { await signOut(auth); userBadge.innerHTML = ""; }
+      catch(e){ alert("Sign-out error: " + e.message); }
+    }
+    signInBtn?.addEventListener("click", googleSignInStart);
+    signOutBtn?.addEventListener("click", googleSignOut);
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        signInBtn.style.display = "none";
+        signOutBtn.style.display = "inline-flex";
+      } else {
+        signOutBtn.style.display = "none";
+        signInBtn.style.display = "inline-flex";
+      }
     });
   </script>
 </body>
