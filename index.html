@@ -5,15 +5,15 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>CAT • Cultural Activity Team | RNSIT</title>
-  <meta name="description" content="RNSIT CAT — Gen‑Z pastel, comic-stickers, anime.js animations. Register for events, join committees, and get updates."/>
+  <meta name="description" content="Gen‑Z pastel pop with anime.js. Register for events, join CAT committees, live updates, and interactive vibes at RNSIT." />
 
   <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
   <!-- Icons -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
 
   <!-- anime.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
@@ -24,38 +24,50 @@
 
   <style>
     :root{
-      /* Gen‑Z pastel palette */
+      /* Default palette (Mint Sky) */
       --bg: #f8fafc;
-      --text: #1f2a44;
+      --text: #17233b;
       --muted: #6b7b93;
       --card: #ffffff;
-      --border: rgba(31,42,68,0.12);
       --glass: rgba(255,255,255,0.85);
+      --border: rgba(23,35,59,0.12);
+      --accent1: #B8E6D0; /* mint */
+      --accent2: #A8D8F0; /* sky */
+      --accent3: #FFC7B0; /* peach */
+      --accent4: #D7D3FF; /* lavender */
+      --accent5: #FFE9A9; /* lemon */
 
-      --mint:    #B8E6D0;
-      --sky:     #A8D8F0;
-      --peach:   #FFC7B0;
-      --lavender:#D7D3FF;
-      --lemon:   #FFE9A9;
-      --rose:    #FFB6C1;
-
-      --grad-1: linear-gradient(135deg, #B8E6D0, #A8D8F0);
-      --grad-2: linear-gradient(135deg, #FFC7B0, #D7D3FF);
-      --grad-3: linear-gradient(135deg, #FFE9A9, #A8D8F0);
+      --grad-1: linear-gradient(135deg, var(--accent1), var(--accent2));
+      --grad-2: linear-gradient(135deg, var(--accent3), var(--accent4));
+      --grad-3: linear-gradient(135deg, var(--accent5), var(--accent2));
 
       --radius: 18px;
-      --shadow: 0 16px 48px rgba(31,42,68,0.12);
+      --shadow: 0 18px 48px rgba(23,35,59,0.12);
 
       --font-head: "Baloo 2", system-ui, -apple-system, "Segoe UI", Roboto, Inter, "Helvetica Neue", Arial;
       --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Inter, "Helvetica Neue", Arial;
+    }
+
+    /* Alternate palettes (runtime switch) */
+    [data-theme="Peach Lemon"]{
+      --accent1:#FFC7B0; --accent2:#FFE9A9; --accent3:#A8D8F0; --accent4:#D7D3FF; --accent5:#B8E6D0;
+    }
+    [data-theme="Lavender Sky"]{
+      --accent1:#D7D3FF; --accent2:#A8D8F0; --accent3:#FFB6C1; --accent4:#FFE9A9; --accent5:#B8E6D0;
+    }
+    [data-theme="Mint Rose"]{
+      --accent1:#B8E6D0; --accent2:#FFB6C1; --accent3:#A8D8F0; --accent4:#FFE9A9; --accent5:#D7D3FF;
+    }
+    [data-theme="Sky Pop"]{
+      --accent1:#A8D8F0; --accent2:#FFE9A9; --accent3:#FFC7B0; --accent4:#B8E6D0; --accent5:#D7D3FF;
     }
 
     *{box-sizing:border-box}
     html,body{
       margin:0; padding:0;
       background:
-        radial-gradient(900px 450px at 4% 0%, rgba(168,216,240,0.25), transparent 50%),
-        radial-gradient(900px 450px at 96% 100%, rgba(255,231,160,0.25), transparent 50%),
+        radial-gradient(900px 450px at 4% -10%, color-mix(in oklab, var(--accent2) 30%, transparent), transparent 60%),
+        radial-gradient(900px 450px at 96% 110%, color-mix(in oklab, var(--accent5) 30%, transparent), transparent 60%),
         var(--bg);
       color:var(--text); font-family:var(--font-body);
       overflow-x:hidden;
@@ -63,23 +75,36 @@
     a{color:inherit;text-decoration:none}
     img{display:block;max-width:100%}
 
-    /* ===== Scroll progress + label ===== */
-    #scrollProgress{position:fixed;top:0;left:0;height:6px;background:var(--grad-1);width:0%;z-index:1000}
-    #scrollLabel{position:fixed;top:8px;right:12px;background:var(--glass);border:1px solid var(--border);border-radius:999px;padding:6px 10px;font-size:.85rem;color:var(--muted);backdrop-filter:blur(8px);z-index:1000}
+    /* Cursor trail dots */
+    .trail-dot{
+      position: fixed; width:10px; height:10px; border-radius:50%;
+      pointer-events:none; z-index:1000; opacity:.75;
+      background: var(--accent2);
+      box-shadow: 0 4px 12px color-mix(in oklab, var(--accent2) 40%, transparent);
+    }
 
-    /* ===== Left timeline dots ===== */
+    /* Top progress bar + ring */
+    #scrollProgress{position:fixed;top:0;left:0;height:6px;background:var(--grad-1);width:0%;z-index:1000}
+    #scrollRing{
+      position:fixed; top:10px; right:12px; width:44px; height:44px; border-radius:50%;
+      background: conic-gradient(var(--accent2) 0% 0%, #e6eef7 0% 100%);
+      display:grid; place-items:center; font-size:.75rem; color:#4b6488; z-index:1000;
+      border:1px solid var(--border); backdrop-filter:blur(6px);
+    }
+
+    /* Left timeline dots */
     .timeline{position:fixed;left:12px;top:80px;display:flex;flex-direction:column;gap:14px;z-index:999}
     .dot{width:12px;height:12px;border-radius:50%;background:#e6eef7;border:1px solid var(--border);box-shadow:var(--shadow);transition:transform .25s ease, background .25s ease}
-    .dot.active{background:#87c9ea; transform:scale(1.15)}
+    .dot.active{background:var(--accent2); transform:scale(1.15)}
 
-    /* ===== Digital stickers (real SVG) ===== */
-    .sticker{position:fixed;z-index:-1;opacity:.55}
-    .sticker svg{filter:drop-shadow(0 6px 12px rgba(31,42,68,0.10))}
+    /* Real comic stickers (SVG) */
+    .sticker{position:fixed;z-index:-1;opacity:.6}
+    .sticker svg{filter:drop-shadow(0 6px 12px rgba(23,35,59,0.10))}
     .s1{top:6%; left:-40px; width:160px}
     .s2{bottom:10%; right:-40px; width:160px}
     .s3{top:58%; left:75%; width:120px}
 
-    /* ===== Ticker: live updates, no overlap ===== */
+    /* Live ticker (non-overlapping) */
     .ticker{position:sticky;top:0;z-index:60;background:var(--glass);border-bottom:1px solid var(--border);backdrop-filter:blur(10px)}
     .ticker-inner{display:flex;align-items:center;gap:12px;padding:10px 16px;overflow:hidden}
     .ticker-badge{font-family:var(--font-head);font-weight:700;background:#fff;border:1px solid var(--border);padding:8px 12px;border-radius:999px;color:#3b5c80}
@@ -87,7 +112,7 @@
     .ticker-items{display:inline-flex;gap:24px;align-items:center}
     .ticker-item{color:#3b5c80; white-space:nowrap}
 
-    /* ===== Navbar ===== */
+    /* Nav */
     .nav{
       position:sticky; top:54px; z-index:50;
       width:min(1200px,92%); margin:18px auto;
@@ -95,32 +120,41 @@
       display:flex; align-items:center; justify-content:space-between; padding:12px 16px;
     }
     .brand{font-family:var(--font-head);font-weight:700;display:flex;align-items:center;gap:10px}
-    .brand-logo{width:34px;height:34px;border-radius:12px;background:var(--grad-2);box-shadow:0 8px 16px rgba(31,42,68,0.10)}
+    .brand-logo{width:34px;height:34px;border-radius:12px;background:var(--grad-2);box-shadow:0 8px 16px rgba(23,35,59,0.10)}
     .brand span{background:var(--grad-1);-webkit-background-clip:text;background-clip:text;color:transparent}
     .nav ul{display:flex;gap:16px;list-style:none;margin:0;padding:0}
     .nav a{padding:10px 12px;border-radius:10px;color:#3b5c80}
-    .nav a:hover{background:#ffffff;box-shadow:0 10px 16px rgba(31,42,68,0.08)}
+    .nav a:hover{background:#ffffff;box-shadow:0 10px 16px rgba(23,35,59,0.08)}
     .actions{display:flex;gap:10px}
     .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--border);cursor:pointer;transition:box-shadow .2s ease;position:relative;overflow:hidden;background:#fff;color:#294867}
     .btn-primary{background:var(--grad-1);color:#16324c;font-weight:700}
     .btn-outline{background:#ffffff;color:#294867;font-weight:600}
-    .btn:hover{box-shadow:0 12px 20px rgba(31,42,68,0.10)}
+    .btn:hover{box-shadow:0 12px 20px rgba(23,35,59,0.10)}
 
-    /* ===== Hero ===== */
+    /* Palette switcher */
+    .palette{display:flex;gap:8px;align-items:center}
+    .swatch{width:24px;height:24px;border-radius:50%;border:1px solid var(--border);cursor:pointer;box-shadow:0 4px 10px rgba(23,35,59,0.10)}
+    .swatch[data-theme="Mint Sky"]{background:linear-gradient(135deg,#B8E6D0,#A8D8F0)}
+    .swatch[data-theme="Peach Lemon"]{background:linear-gradient(135deg,#FFC7B0,#FFE9A9)}
+    .swatch[data-theme="Lavender Sky"]{background:linear-gradient(135deg,#D7D3FF,#A8D8F0)}
+    .swatch[data-theme="Mint Rose"]{background:linear-gradient(135deg,#B8E6D0,#FFB6C1)}
+    .swatch[data-theme="Sky Pop"]{background:linear-gradient(135deg,#A8D8F0,#FFE9A9)}
+
+    /* Hero */
     .hero{position:relative;width:min(1200px,92%);margin:24px auto;display:grid;grid-template-columns:1.1fr 0.9fr;gap:28px;align-items:center}
     .hero-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
-    .hero h1{font-family:var(--font-head);font-weight:700;font-size:clamp(2rem, 3vw + 1rem, 3.6rem);line-height:1.03;margin:0 0 8px;color:#1f2a44}
+    .hero h1{font-family:var(--font-head);font-weight:700;font-size:clamp(2rem, 3vw + 1rem, 3.6rem);line-height:1.03;margin:0 0 8px;color:var(--text)}
     .hero .sub{color:var(--muted);margin:0 0 18px}
     .hero .cta{display:flex;gap:12px;flex-wrap:wrap}
     .hero-media{border:1px solid var(--border);border-radius:var(--radius);background:#fff;box-shadow:var(--shadow);padding:16px}
-    .hero-media .badge{background:#fff;border:1px solid var(--border);}
+    .hero-media .badge{background:#fff;border:1px solid var(--border)}
 
-    /* ===== Sections ===== */
+    /* Sections */
     section{width:min(1200px,92%);margin:40px auto}
     .section-title{font-family:var(--font-head);font-weight:700;font-size:clamp(1.6rem, 2.2vw + .8rem, 2.4rem);margin-bottom:10px;color:#2a4564}
     .section-sub{color:var(--muted);margin:-4px 0 22px}
 
-    /* ===== Event cards ===== */
+    /* Events grid */
     .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
     .card{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px}
     .card h3{margin:0 0 8px;font-weight:700}
@@ -129,15 +163,15 @@
     .badge{background:#fdfdfd;border:1px solid var(--border);padding:8px 12px;border-radius:999px;color:#466b92;font-weight:600}
     .hero-badges{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
 
-    /* ===== Modal ===== */
-    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(31,42,68,0.2);backdrop-filter:blur(8px);z-index:1000}
+    /* Modals */
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(23,35,59,0.2);backdrop-filter:blur(8px);z-index:1000}
     .modal.open{display:flex}
     .modal-card{width:min(760px,92%);background:var(--glass);border:1px solid var(--border);border-radius:20px;padding:18px;box-shadow:var(--shadow)}
     .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
     .modal-title{font-weight:700}
     .close{cursor:pointer;opacity:.85}
 
-    /* ===== Forms ===== */
+    /* Forms */
     .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     .form-row{display:flex;flex-direction:column;gap:8px}
     label{font-weight:600}
@@ -146,26 +180,25 @@
     .terms{font-size:.95rem;color:var(--muted)}
     .error{color:#d65b5b;font-size:.9rem;min-height:18px}
 
-    /* ===== Cancel list ===== */
+    /* Cancel list */
     .list{display:grid;grid-template-columns:1fr 1fr;gap:10px}
     .list-item{background:#fff;border:1px solid var(--border);border-radius:12px;padding:10px}
 
-    /* ===== Committees ===== */
+    /* Committees */
     .committees{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-    .committee{background:#fff;border:1px solid var(--border);border-radius:16px;padding:14px;box-shadow:var(--shadow);text-align:center;cursor:pointer;transition:transform .2s ease, box-shadow .2s ease}
-    .committee:hover{transform:translateY(-2px); box-shadow:0 16px 28px rgba(31,42,68,0.10)}
+    .committee{background:#fff;border:1px solid var(--border);border-radius:16px;padding:14px;box-shadow:var(--shadow);text-align:center;cursor:pointer}
     .committee .icon{font-size:28px;margin-bottom:8px;color:#466b92}
     .committee h4{margin:6px 0 4px;font-weight:700}
     .committee p{color:var(--muted);font-size:.95rem}
 
-    /* ===== Members carousel ===== */
+    /* Members carousel */
     .carousel{position:relative;background:var(--glass);border:1px solid var(--border);border-radius:20px;padding:14px;overflow:hidden}
     .carousel-track{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:12px}
     .member{min-width:240px;scroll-snap-align:start;background:#fff;border:1px solid var(--border);border-radius:18px;padding:12px;box-shadow:var(--shadow);text-align:center}
-    .member img{width:92px;height:92px;border-radius:18px;margin:10px auto;object-fit:cover;box-shadow:0 10px 24px rgba(31,42,68,0.10)}
+    .member img{width:92px;height:92px;border-radius:18px;margin:10px auto;object-fit:cover;box-shadow:0 10px 24px rgba(23,35,59,0.10)}
     .role{color:#466b92;font-weight:700;margin-top:4px}
 
-    /* ===== Chatbot ===== */
+    /* Chat widget */
     .chat-launch{position:fixed;right:18px;bottom:18px;z-index:60;background:#fff;color:#294867;border:1px solid var(--border);border-radius:999px;padding:12px 16px;box-shadow:var(--shadow);cursor:pointer;font-weight:700}
     .chat{position:fixed;right:18px;bottom:78px;width:360px;max-height:60vh;z-index:60;background:var(--glass);border:1px solid var(--border);border-radius:20px;display:none;flex-direction:column;overflow:hidden}
     .chat.open{display:flex}
@@ -176,11 +209,11 @@
     .chat-form{display:flex;gap:8px;padding:10px;border-top:1px solid var(--border)}
     .chat-form input{flex:1}
 
-    /* ===== Footer ===== */
+    /* Footer */
     footer{border-top:1px solid var(--border);background:#ffffff;padding:22px 0;margin-top:40px}
     .footer-inner{width:min(1200px,92%);margin:0 auto;display:flex;justify-content:space-between;align-items:center;color:var(--muted)}
 
-    /* ===== Responsive ===== */
+    /* Responsive */
     @media (max-width:960px){
       .hero{grid-template-columns:1fr}
       .grid{grid-template-columns:1fr 1fr}
@@ -193,11 +226,14 @@
     }
   </style>
 </head>
-<body>
+<body data-theme="Mint Sky">
+
+  <!-- Cursor trail (generated by JS) -->
+  <div id="trailRoot" aria-hidden="true"></div>
 
   <!-- Scroll progress -->
   <div id="scrollProgress"></div>
-  <div id="scrollLabel">Scroll 0%</div>
+  <div id="scrollRing"><span id="scrollPct">0%</span></div>
 
   <!-- Left timeline dots -->
   <div class="timeline" aria-hidden="true">
@@ -211,7 +247,6 @@
 
   <!-- Digital stickers (SVG illustrations) -->
   <div class="sticker s1">
-    <!-- badge + lines -->
     <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <circle cx="60" cy="60" r="40" fill="#FFE9A9"/>
       <path d="M25 55 L95 55" stroke="#A8D8F0" stroke-width="6" stroke-linecap="round"/>
@@ -219,7 +254,6 @@
     </svg>
   </div>
   <div class="sticker s2">
-    <!-- media panel -->
     <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <rect x="25" y="25" width="70" height="70" rx="16" fill="#B8E6D0"/>
       <circle cx="60" cy="60" r="8" fill="#D7D3FF"/>
@@ -228,7 +262,6 @@
     </svg>
   </div>
   <div class="sticker s3">
-    <!-- smile arc -->
     <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <path d="M20 80 C40 40, 80 40, 100 80" stroke="#FFB6C1" stroke-width="8" fill="none" stroke-linecap="round"/>
     </svg>
@@ -258,9 +291,16 @@
       <li><a href="#contact">Contact</a></li>
     </ul>
     <div class="actions">
-      <button class="btn btn-outline magnetic" id="signInBtn"><i class="fa-brands fa-google"></i> Sign in</button>
-      <button class="btn btn-primary magnetic" onclick="document.querySelector('#newsletterModal').classList.add('open')"><i class="fa-solid fa-envelope-open-text"></i> Updates</button>
-      <button class="btn btn-outline magnetic" id="signOutBtn" style="display:none"><i class="fa-solid fa-right-from-bracket"></i> Sign out</button>
+      <div class="palette" title="Palette">
+        <div class="swatch" data-theme="Mint Sky" aria-label="Mint Sky"></div>
+        <div class="swatch" data-theme="Peach Lemon" aria-label="Peach Lemon"></div>
+        <div class="swatch" data-theme="Lavender Sky" aria-label="Lavender Sky"></div>
+        <div class="swatch" data-theme="Mint Rose" aria-label="Mint Rose"></div>
+        <div class="swatch" data-theme="Sky Pop" aria-label="Sky Pop"></div>
+      </div>
+      <button class="btn btn-outline" id="signInBtn"><i class="fa-brands fa-google"></i> Sign in</button>
+      <button class="btn btn-primary" onclick="openModal('newsletterModal','#newsletterCard')"><i class="fa-solid fa-envelope-open-text"></i> Updates</button>
+      <button class="btn btn-outline" id="signOutBtn" style="display:none"><i class="fa-solid fa-right-from-bracket"></i> Sign out</button>
     </div>
   </nav>
 
@@ -268,14 +308,14 @@
   <section class="hero" id="hero">
     <div class="hero-card">
       <h1 id="heroTitle">Cultural Activity Team</h1>
-      <p class="sub">Gen‑Z pastel, playful stickers, and anime.js motion for <strong>RNSIT</strong>. Register for events, join committees, and stay updated smoothly.</p>
+      <p class="sub">Gen‑Z pastel pop, anime.js motion, and interactive design for <strong>RNSIT</strong>. Register for events, explore committees, and get updates.</p>
       <div class="cta">
-        <button class="btn btn-primary magnetic" onclick="document.getElementById('events').scrollIntoView({behavior:'smooth'})"><i class="fa-solid fa-ticket"></i> Register for Events</button>
-        <button class="btn btn-outline magnetic" onclick="document.getElementById('recruitment').scrollIntoView({behavior:'smooth'})"><i class="fa-solid fa-user-plus"></i> Join CAT</button>
+        <button class="btn btn-primary" onclick="document.getElementById('events').scrollIntoView({behavior:'smooth'})"><i class="fa-solid fa-ticket"></i> Register for Events</button>
+        <button class="btn btn-outline" onclick="document.getElementById('committees').scrollIntoView({behavior:'smooth'})"><i class="fa-solid fa-layer-group"></i> Explore Committees</button>
       </div>
       <div class="hero-badges" style="margin-top:10px">
         <span class="badge">Pastel • Comic • Gen‑Z</span>
-        <span class="badge">anime.js everywhere</span>
+        <span class="badge">anime.js interactions</span>
         <span class="badge">Scroll timeline</span>
       </div>
     </div>
@@ -285,8 +325,8 @@
       <p class="sub">Upcoming fests, workshops, and campus shows — live ticker on top and full list below.</p>
       <div class="hero-badges">
         <span class="badge">Digital stickers</span>
-        <span class="badge">High-end layout</span>
-        <span class="badge">Clean animations</span>
+        <span class="badge">Palette switch</span>
+        <span class="badge">Confetti success</span>
       </div>
     </div>
   </section>
@@ -308,11 +348,11 @@
         </div>
         <div class="form-row">
           <label>&nbsp;</label>
-          <button class="btn btn-outline magnetic" onclick="loadMyRegistrations()"><i class="fa-solid fa-list"></i> Load registrations</button>
+          <button class="btn btn-outline" onclick="loadMyRegistrations()"><i class="fa-solid fa-list"></i> Load registrations</button>
         </div>
       </div>
       <div id="myRegs" class="list" style="margin-top:12px"></div>
-      <p class="terms" style="margin-top:8px"><a href="javascript:void(0)" onclick="openTerms()">View Terms & Conditions</a></p>
+      <p class="terms" style="margin-top:8px"><a href="javascript:void(0)" onclick="openModal('termsModal','#termsCard')">View Terms & Conditions</a></p>
     </div>
   </section>
 
@@ -320,7 +360,9 @@
   <section id="recruitment">
     <h2 class="section-title">Join CAT — Recruitment</h2>
     <p class="section-sub">Become part of the backbone behind every RNSIT cultural event.</p>
-    <div id="recruitmentStatus" class="badge" style="display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--border)"> <i class="fa-solid fa-minus"></i> Recruitment currently closed</div>
+    <div id="recruitmentStatus" class="badge" style="display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--border)">
+      <i class="fa-solid fa-minus"></i> Recruitment currently closed
+    </div>
 
     <div id="recruitmentFormWrap" class="hero-card" style="margin-top:14px;display:none">
       <h3 style="margin:0 0 10px">Apply to CAT</h3>
@@ -333,7 +375,7 @@
         <div class="form-row" style="grid-column:1/-1"><label for="rMotivation">Why do you want to join?</label><textarea id="rMotivation" placeholder="Tell us about your interest and experience"></textarea></div>
       </div>
       <div class="actions" style="margin-top:12px">
-        <button class="btn btn-primary magnetic" onclick="submitRecruitment()"><i class="fa-solid fa-paper-plane"></i> Submit application</button>
+        <button class="btn btn-primary" onclick="submitRecruitment()"><i class="fa-solid fa-paper-plane"></i> Submit application</button>
         <span id="rStatus" class="terms"></span>
       </div>
       <p class="terms" style="margin-top:10px">Verification is done by CAT leads via email/phone. You’ll receive a status mail upon review.</p>
@@ -370,7 +412,7 @@
         <div class="form-row" style="grid-column:1/-1"><label for="cMsg">Message</label><textarea id="cMsg" placeholder="Type your message"></textarea></div>
       </div>
       <div class="actions" style="margin-top:12px">
-        <button class="btn btn-primary magnetic" onclick="submitContact()"><i class="fa-solid fa-share"></i> Send</button>
+        <button class="btn btn-primary" onclick="submitContact()"><i class="fa-solid fa-share"></i> Send</button>
         <span id="cStatus" class="terms"></span>
       </div>
     </div>
@@ -392,10 +434,10 @@
         </div>
         <div class="form-row">
           <label>&nbsp;</label>
-          <button class="btn btn-outline magnetic" onclick="subscribeNewsletter()"><i class="fa-solid fa-bell"></i> Subscribe</button>
+          <button class="btn btn-outline" onclick="subscribeNewsletter()"><i class="fa-solid fa-bell"></i> Subscribe</button>
         </div>
         <div class="form-row" style="grid-column:1/-1">
-          <button class="btn btn-primary magnetic" onclick="googleSignInStart()"><i class="fa-brands fa-google"></i> Sign in with Google</button>
+          <button class="btn btn-primary" onclick="googleSignInStart()"><i class="fa-brands fa-google"></i> Sign in with Google</button>
         </div>
       </div>
     </div>
@@ -417,7 +459,7 @@
         <div class="form-row" style="grid-column:1/-1"><label for="regNotes">Notes</label><textarea id="regNotes" placeholder="Any special requirements"></textarea></div>
       </div>
       <div class="actions" style="margin-top:12px">
-        <button class="btn btn-primary magnetic" onclick="submitRegistration()"><i class="fa-solid fa-check"></i> Confirm registration</button>
+        <button class="btn btn-primary" onclick="submitRegistration()"><i class="fa-solid fa-check"></i> Confirm registration</button>
         <span id="regStatus" class="terms"></span>
       </div>
       <p class="terms" style="margin-top:8px">By registering, you agree to CAT’s event terms. You’ll receive schedule & update mails.</p>
@@ -442,7 +484,7 @@
     </div>
   </div>
 
-  <!-- Committee detail modal (anime.js pop) -->
+  <!-- Committee detail modal -->
   <div class="modal" id="committeeModal">
     <div class="modal-card" id="committeeCard">
       <div class="modal-header">
@@ -454,7 +496,7 @@
   </div>
 
   <!-- Chatbot -->
-  <button class="chat-launch magnetic" id="chatOpen"><i class="fa-solid fa-comment"></i> Ask CAT</button>
+  <button class="chat-launch" id="chatOpen"><i class="fa-solid fa-comment"></i> Ask CAT</button>
   <div class="chat" id="chatBox" aria-label="CAT Helpdesk">
     <div class="chat-header">
       <strong><i class="fa-solid fa-robot"></i> CAT Helpdesk</strong>
@@ -478,7 +520,7 @@
   </footer>
 
   <script>
-    // ======= CONFIG =======
+    /* ======= DATA ======= */
     const RECRUITMENT_OPEN = false; // set true during drives
     const EVENTS = [
       { id:"beats25", name:"Campus Beats ’25", when:"Jan 28, 2025", where:"Main Stage", type:"Fest", desc:"Music & dance showcase with teams and solo slots.", tags:["Music","Dance","Show"], upcoming:true },
@@ -510,51 +552,61 @@
       {name:"Sneha", role:"Dance Coord", img:"https://i.pravatar.cc/150?img=49"},
     ];
 
-    // ======= YEAR =======
+    /* ======= YEAR ======= */
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    // ======= anime.js: Hero title per-letter animation =======
+    /* ======= anime.js: Hero title per-letter ======= */
     const heroTitle = document.getElementById('heroTitle');
     heroTitle.innerHTML = heroTitle.textContent.split('').map(ch => `<span class="letter">${ch}</span>`).join('');
     anime.timeline({loop:false})
       .add({
         targets: '#heroTitle .letter',
-        translateY: [40,0],
+        translateY: [50,0],
         opacity: [0,1],
         easing: 'easeOutExpo',
-        duration: 600,
-        delay: (el, i) => 20*i
+        duration: 650,
+        delay: (el, i) => 18*i
       });
 
-    // ======= anime.js: Sticker gentle float =======
-    anime({
-      targets: '.sticker',
-      translateY: [-6, 6],
-      direction: 'alternate',
-      easing: 'easeInOutSine',
-      duration: 2400,
-      loop: true,
-      delay: (el, i) => i*400
+    /* ======= Cursor trail ======= */
+    const trailRoot = document.getElementById('trailRoot');
+    const trailDots = [];
+    for(let i=0;i<12;i++){
+      const d = document.createElement('div');
+      d.className = 'trail-dot';
+      d.style.background = i%2 ? 'var(--accent3)' : 'var(--accent2)';
+      trailRoot.appendChild(d); trailDots.push(d);
+    }
+    let mouse = {x:window.innerWidth/2, y:window.innerHeight/2};
+    window.addEventListener('mousemove', e => { mouse.x=e.clientX; mouse.y=e.clientY; });
+    trailDots.forEach((dot,i)=>{
+      anime({
+        targets: dot,
+        translateX: () => mouse.x,
+        translateY: () => mouse.y,
+        scale: [0.9, 1.1],
+        direction: 'alternate',
+        easing: 'easeOutQuad',
+        duration: 500 + i*40,
+        loop: true
+      });
     });
 
-    // ======= Scroll progress + label =======
-    function updateScrollProgress(){
+    /* ======= Scroll progress + ring ======= */
+    function updateScroll(){
       const doc = document.documentElement;
-      const scrollTop = doc.scrollTop || document.body.scrollTop;
-      const scrollHeight = doc.scrollHeight - doc.clientHeight;
-      const percent = scrollHeight ? Math.round((scrollTop / scrollHeight) * 100) : 0;
-      anime({
-        targets: '#scrollProgress',
-        width: `${percent}%`,
-        duration: 200,
-        easing: 'linear'
-      });
-      document.getElementById('scrollLabel').textContent = `Scroll ${percent}%`;
+      const top = doc.scrollTop || document.body.scrollTop;
+      const max = doc.scrollHeight - doc.clientHeight;
+      const pct = max ? Math.round(top / max * 100) : 0;
+      anime({targets:'#scrollProgress', width: `${pct}%`, duration: 150, easing:'linear'});
+      document.getElementById('scrollRing').style.background =
+        `conic-gradient(var(--accent2) 0% ${pct}%, #e6eef7 ${pct}% 100%)`;
+      document.getElementById('scrollPct').textContent = `${pct}%`;
     }
-    window.addEventListener('scroll', updateScrollProgress);
-    window.addEventListener('load', updateScrollProgress);
+    window.addEventListener('scroll', updateScroll);
+    window.addEventListener('load', updateScroll);
 
-    // ======= Left timeline dots =======
+    /* ======= Left timeline dots ======= */
     const sectionMap = [
       {id:'hero', dot:'dot-hero'},
       {id:'events', dot:'dot-events'},
@@ -568,17 +620,17 @@
         const cfg = sectionMap.find(s=>s.id===entry.target.id);
         if(!cfg) return;
         const dot = document.getElementById(cfg.dot);
-        if(entry.isIntersecting) dot.classList.add('active'); else dot.classList.remove('active');
+        if(entry.isIntersecting){ dot.classList.add('active'); }
+        else { dot.classList.remove('active'); }
       });
     }, {threshold:0.35});
-    sectionMap.forEach(s=>{ const el = document.getElementById(s.id); if(el) observer.observe(el); });
+    sectionMap.forEach(s=>{ const el=document.getElementById(s.id); if(el) observer.observe(el); });
 
-    // ======= NEWS TICKER via anime.js =======
+    /* ======= Ticker via anime.js (no overlap, pause on hover) ======= */
     function renderTicker(){
       const itemsEl = document.getElementById("tickerItems");
       const items = EVENTS.map(ev => `<span class="ticker-item"><i class="fa-solid fa-star"></i> <strong>${ev.name}</strong> • ${ev.when} @ ${ev.where}</span>`).join("");
-      itemsEl.innerHTML = items + items; // duplicate for infinite loop
-
+      itemsEl.innerHTML = items + items + items; // long loop
       const track = document.getElementById("tickerTrack");
       const anim = anime({
         targets: track,
@@ -588,46 +640,48 @@
         loop: true,
         autoplay: true
       });
-
-      // pause on hover
       track.addEventListener('mouseenter', ()=> anim.pause());
       track.addEventListener('mouseleave', ()=> anim.play());
     }
     renderTicker();
 
-    // ======= EVENTS GRID =======
+    /* ======= Events grid + reveal ======= */
     const grid = document.getElementById("eventsGrid");
-    function tagPills(tags){ return tags.map(t => `<span class="badge">${t}</span>`).join(" "); }
+    function pill(tags){ return tags.map(t=>`<span class="badge">${t}</span>`).join(" "); }
     function renderEvents(){
-      grid.innerHTML = EVENTS.map(ev => `
+      grid.innerHTML = EVENTS.map(ev=>`
         <div class="card">
           <h3>${ev.name}</h3>
           <p>${ev.desc}</p>
           <div class="meta"><span><i class="fa-solid fa-calendar"></i> ${ev.when}</span> • <span><i class="fa-solid fa-location-dot"></i> ${ev.where}</span></div>
-          <div class="hero-badges">${tagPills(ev.tags)}</div>
+          <div class="hero-badges">${pill(ev.tags)}</div>
           <div class="actions" style="margin-top:10px">
-            <button class="btn btn-primary magnetic" onclick="openRegister('${ev.id}')"><i class="fa-solid fa-ticket"></i> Register</button>
+            <button class="btn btn-primary" onclick="openRegister('${ev.id}')"><i class="fa-solid fa-ticket"></i> Register</button>
           </div>
         </div>
       `).join("");
-      anime({
-        targets: '#eventsGrid .card',
-        opacity: [0,1],
-        translateY: [20,0],
-        easing: 'easeOutQuad',
-        duration: 500,
-        delay: (el, i) => 40*i
-      });
+      anime({targets:'#eventsGrid .card', opacity:[0,1], translateY:[24,0], duration:500, easing:'easeOutQuad', delay:(el,i)=>60*i});
     }
     renderEvents();
 
-    // ======= REGISTER =======
-    let currentEventId = null;
+    /* ======= Register flow + confetti ======= */
+    let currentEventId=null;
     function openRegister(id){
-      currentEventId = id;
+      currentEventId=id;
       const ev = EVENTS.find(e=>e.id===id);
       document.getElementById("regEventName").innerHTML = `<strong>Event:</strong> ${ev.name} • <em>${ev.when} @ ${ev.where}</em>`;
-      openModal('registerModal', '#registerCard');
+      openModal('registerModal','#registerCard');
+    }
+    function confettiBurst(x,y){
+      for(let i=0;i<20;i++){
+        const s = document.createElement('span');
+        s.style.position='fixed'; s.style.left=x+'px'; s.style.top=y+'px';
+        s.textContent = ['🎉','✨','⭐','🌟','💫'][Math.floor(Math.random()*5)];
+        s.style.zIndex=1000;
+        document.body.appendChild(s);
+        anime({targets:s, translateX:(Math.random()*120-60), translateY:(Math.random()*-140-40), opacity:[1,0], duration:900, easing:'easeOutCubic',
+          complete:()=>s.remove()});
+      }
     }
     function submitRegistration(){
       const name = document.getElementById("regName").value.trim();
@@ -636,19 +690,17 @@
       const dept = document.getElementById("regDept").value.trim();
       const notes = document.getElementById("regNotes").value.trim();
       const status = document.getElementById("regStatus");
-      if(!name || !email || !usn || !dept){
-        status.textContent = "Please fill all required fields.";
-        return;
-      }
+      if(!name || !email || !usn || !dept){ status.textContent="Please fill all required fields."; return; }
       const ev = EVENTS.find(e=>e.id===currentEventId);
-      const entry = {id: crypto.randomUUID(), eventId: ev.id, eventName: ev.name, name, email, usn, dept, notes, ts: Date.now(), status:"Active"};
+      const entry = {id:crypto.randomUUID(), eventId:ev.id, eventName:ev.name, name, email, usn, dept, notes, ts:Date.now(), status:"Active"};
       const store = JSON.parse(localStorage.getItem("catRegs")||"[]"); store.push(entry);
       localStorage.setItem("catRegs", JSON.stringify(store));
       status.textContent = "Registered! You’ll receive updates via email.";
-      setTimeout(()=> closeModal('registerModal'), 900);
+      confettiBurst(window.innerWidth/2, window.innerHeight/2);
+      setTimeout(()=> closeModal('registerModal'), 950);
     }
 
-    // ======= Manage / Cancel =======
+    /* ======= Manage / Cancel ======= */
     function loadMyRegistrations(){
       const email = document.getElementById("manageEmail").value.trim();
       const wrap = document.getElementById("myRegs");
@@ -668,10 +720,11 @@
               <option>Personal reasons</option>
               <option>Other (explain)</option>
             </select>
-            <button class="btn btn-outline btn-small magnetic" onclick="cancelReg('${r.id}')"><i class="fa-solid fa-ban"></i> Cancel</button>
+            <button class="btn btn-outline btn-small" onclick="cancelReg('${r.id}')"><i class="fa-solid fa-ban"></i> Cancel</button>
           </div>
         </div>
       `).join("");
+      anime({targets:'#myRegs .list-item', opacity:[0,1], translateY:[16,0], duration:400, easing:'easeOutQuad', delay:(el,i)=>40*i});
     }
     function cancelReg(id){
       const store = JSON.parse(localStorage.getItem("catRegs")||"[]");
@@ -685,12 +738,12 @@
       alert("Your registration has been cancelled under CAT terms. You’ll get a confirmation mail.");
     }
 
-    // ======= RECRUITMENT TOGGLE =======
+    /* ======= Recruitment toggle ======= */
     const statusEl = document.getElementById("recruitmentStatus");
     const formWrap = document.getElementById("recruitmentFormWrap");
     if(RECRUITMENT_OPEN){
       statusEl.innerHTML = `<i class="fa-solid fa-bolt"></i> Recruitment open now`;
-      formWrap.style.display = "block";
+      formWrap.style.display="block";
       anime({targets:'#recruitmentFormWrap', opacity:[0,1], translateY:[16,0], duration:400, easing:'easeOutQuad'});
     }
     function submitRecruitment(){
@@ -700,31 +753,17 @@
       const rDept = document.getElementById("rDept").value.trim();
       const rMotivation = document.getElementById("rMotivation").value.trim();
       const rStatus = document.getElementById("rStatus");
-      if(!rName || !rEmail || !rYear || !rDept){ rStatus.textContent = "Fill all required fields."; return; }
+      if(!rName || !rEmail || !rYear || !rDept){ rStatus.textContent="Fill all required fields."; return; }
       const store = JSON.parse(localStorage.getItem("catRecruit")||"[]");
       store.push({id:crypto.randomUUID(), rName, rEmail, rYear, rDept, rMotivation, ts:Date.now(), status:"Submitted"});
       localStorage.setItem("catRecruit", JSON.stringify(store));
       rStatus.textContent = "Application submitted. Verification will follow via email.";
-    }
-
-    // ======= Committees grid + anime.js modal =======
-    const committeesGrid = document.getElementById("committeesGrid");
-    function renderCommittees(){
-      committeesGrid.innerHTML = COMMITTEES.map(c=>`
-        <div class="committee" onclick="openCommittee('${c.id}')">
-          <div class="icon"><i class="fa-solid fa-${c.icon}"></i></div>
+      confettiBurst(window.innerWidth-120, 120       <div class="icon"><i class="fa-solid fa-${c.icon}"></i></div>
           <h4>${c.name}</h4>
           <p>Tap to learn more</p>
         </div>
       `).join("");
-      anime({
-        targets: '#committeesGrid .committee',
-        opacity: [0,1],
-        scale: [0.98, 1],
-        easing: 'easeOutQuad',
-        duration: 450,
-        delay: (el, i) => 60*i
-      });
+      anime({targets:'#committeesGrid .committee', opacity:[0,1], scale:[0.98,1], duration:450, easing:'easeOutQuad', delay:(el,i)=>60*i});
     }
     renderCommittees();
 
@@ -744,52 +783,45 @@
           <ul>${toolsList}</ul>
         </div>
       `;
-      openModal('committeeModal', '#committeeCard');
+      openModal('committeeModal','#committeeCard');
     }
 
-    // ======= Members carousel (anime.js driven scroll) =======
+    /* ======= Members carousel (auto scroll) ======= */
     const membersTrack = document.getElementById("membersTrack");
     function renderMembers(){
       membersTrack.innerHTML = MEMBERS.map(m=>`
         <div class="member">
-          <img src="${m.img}" alt="${m.name}"/>
+          ${m.img}
           <div style="font-weight:700">${m.name}</div>
           <div class="role">${m.role}</div>
         </div>
       `).join("");
-
-      // auto-scroll using anime update callback
       let width = membersTrack.scrollWidth - membersTrack.clientWidth;
       function startAutoScroll(){
-        anime({
-          targets: {pos: 0},
+        const anim = anime({
+          targets: {pos:0},
           pos: width,
-          duration: 30000,
+          duration: 28000,
           easing: 'linear',
           loop: true,
-          update: anim => {
-            membersTrack.scrollLeft = anim.animations[0].currentValue;
-          }
+          update: a => { membersTrack.scrollLeft = a.animations[0].currentValue; }
         });
+        membersTrack.addEventListener('mouseenter', ()=> anim.pause());
+        membersTrack.addEventListener('mouseleave', ()=> anim.play());
+        window.addEventListener('resize', ()=> { width = membersTrack.scrollWidth - membersTrack.clientWidth; anim.restart(); });
       }
       startAutoScroll();
-
-      // pause on hover
-      let paused = false;
-      membersTrack.addEventListener('mouseenter', ()=> { paused = true; anime.pause(); });
-      membersTrack.addEventListener('mouseleave', ()=> { if(paused){ paused=false; anime.restart(); } });
-      window.addEventListener('resize', ()=> { width = membersTrack.scrollWidth - membersTrack.clientWidth; });
     }
     renderMembers();
 
-    // ======= Contact =======
+    /* ======= Contact ======= */
     function submitContact(){
       const n = document.getElementById("cName").value.trim();
       const e = document.getElementById("cEmail").value.trim();
       const t = document.getElementById("cTopic").value.trim();
       const m = document.getElementById("cMsg").value.trim();
       const s = document.getElementById("cStatus");
-      if(!n || !e || !m){ s.textContent = "Please fill the required fields."; return; }
+      if(!n || !e || !m){ s.textContent="Please fill the required fields."; return; }
       const store = JSON.parse(localStorage.getItem("catContact")||"[]");
       store.push({id:crypto.randomUUID(), n,e,t,m, ts:Date.now()});
       localStorage.setItem("catContact", JSON.stringify(store));
@@ -797,76 +829,56 @@
       anime({targets: '.chat-launch', scale:[1,1.08,1], duration:600, easing:'easeInOutQuad'});
     }
 
-    // ======= Newsletter =======
+    /* ======= Newsletter ======= */
     function subscribeNewsletter(){
       const email = document.getElementById("nEmail").value.trim();
-      const err = document.getElementById("nError"); err.textContent = "";
-      if(!email || !email.includes("@")){ err.textContent = "Enter a valid email."; return; }
+      const err = document.getElementById("nError"); err.textContent="";
+      if(!email || !email.includes("@")){ err.textContent="Enter a valid email."; return; }
       const store = JSON.parse(localStorage.getItem("catNews")||"[]");
-      if(store.includes(email)){ err.textContent = "Already subscribed."; return; }
+      if(store.includes(email)){ err.textContent="Already subscribed."; return; }
       store.push(email); localStorage.setItem("catNews", JSON.stringify(store));
       closeModal('newsletterModal');
       alert("Subscribed! You’ll receive CAT newsletters.");
     }
 
-    // ======= Chatbot =======
+    /* ======= Chatbot ======= */
     function toggleChat(open){ document.getElementById("chatBox").classList.toggle("open", open); }
     document.getElementById("chatOpen").addEventListener("click", ()=> toggleChat(true));
     function sendChat(){
       const input = document.getElementById("chatInput");
       const msg = input.value.trim(); if(!msg) return;
       const body = document.getElementById("chatBody");
-      body.insertAdjacentHTML("beforeend", `<div class="bubble me">${msg}</div>`); input.value = ""; body.scrollTop = body.scrollHeight;
+      body.insertAdjacentHTML("beforeend", `<div class="bubble me">${msg}</div>`); input.value=""; body.scrollTop = body.scrollHeight;
       setTimeout(()=>{
         body.insertAdjacentHTML("beforeend", `<div class="bubble">Thanks! We’ll contact you soon. For urgent matters, mail <strong>cat@rnsit.edu.in</strong>.</div>`);
         body.scrollTop = body.scrollHeight;
       }, 650);
     }
 
-    // ======= Modals with anime.js =======
+    /* ======= Modals (anime.js) ======= */
     function openModal(id, cardSel){
       const modal = document.getElementById(id);
       modal.classList.add('open');
-      anime.set(cardSel, {scale: 0.96, opacity: 0, translateY: 16});
-      anime({targets: cardSel, scale: 1, opacity: 1, translateY: 0, duration: 300, easing: 'easeOutQuad'});
-      modal.addEventListener('click', (e)=>{ if(e.target === modal) closeModal(id); }, {once:true});
+      anime.set(cardSel, {scale:0.96, opacity:0, translateY:16});
+      anime({targets:cardSel, scale:1, opacity:1, translateY:0, duration:280, easing:'easeOutQuad'});
+      modal.addEventListener('click', (e)=>{ if(e.target===modal) closeModal(id); });
     }
     function closeModal(id){
       const modal = document.getElementById(id);
       const card = modal.querySelector('.modal-card');
-      anime({
-        targets: card,
-        scale: 0.96, opacity: 0, translateY: 16,
-        duration: 220, easing: 'easeInQuad',
-        complete: ()=> modal.classList.remove('open')
-      });
+      anime({targets:card, scale:0.96, opacity:0, translateY:16, duration:220, easing:'easeInQuad', complete:()=>modal.classList.remove('open')});
     }
 
-    // ======= Magnetic buttons (anime.js ripple) =======
-    document.querySelectorAll('.magnetic').forEach(btn=>{
-      btn.addEventListener('click', (ev)=>{
-        const ripple = document.createElement('span');
-        ripple.style.position = 'absolute';
-        ripple.style.left = `${ev.offsetX}px`;
-        ripple.style.top = `${ev.offsetY}px`;
-        ripple.style.width = ripple.style.height = '0px';
-        ripple.style.borderRadius = '50%';
-        ripple.style.background = 'rgba(0,0,0,0.08)';
-        ripple.style.transform = 'translate(-50%, -50%)';
-        btn.appendChild(ripple);
-        anime({
-          targets: ripple,
-          width: 180, height: 180, opacity: [0.4, 0],
-          easing: 'easeOutQuad', duration: 600,
-          complete: ()=> ripple.remove()
-        });
+    /* ======= Palette switch ======= */
+    document.querySelectorAll('.swatch').forEach(s=>{
+      s.addEventListener('click', ()=>{
+        const theme = s.getAttribute('data-theme');
+        document.body.setAttribute('data-theme', theme);
+        anime({targets:'body', backgroundColor:['#fff','#fff'], duration:300}); // subtle refresh
       });
     });
 
-    // ======= Terms =======
-    function openTerms(){ openModal('termsModal', '#termsCard'); }
-
-    // ======= Firebase Auth (Google Sign-In) =======
+    /* ======= Firebase Auth (Google Sign-In) ======= */
     // TODO: paste your Firebase config below (from Firebase Console)
     const firebaseConfig = {
       apiKey: "PASTE_API_KEY",
@@ -874,7 +886,7 @@
       projectId: "PASTE_PROJECT",
       appId: "PASTE_APP_ID"
     };
-    try { firebase.initializeApp(firebaseConfig); } catch (e) { console.warn("Firebase not initialized. Paste your config.", e); }
+    try { firebase.initializeApp(firebaseConfig); } catch(e){ console.warn("Firebase not initialized. Paste your config.", e); }
     const auth = firebase.apps?.length ? firebase.auth() : null;
     const provider = auth ? new firebase.auth.GoogleAuthProvider() : null;
 
@@ -893,12 +905,12 @@
     if(auth){
       auth.onAuthStateChanged(user=>{
         if(user){
-          signInBtn.style.display = 'none';
-          signOutBtn.style.display = 'inline-flex';
+          signInBtn.style.display='none';
+          signOutBtn.style.display='inline-flex';
           signOutBtn.onclick = ()=> auth.signOut();
         } else {
-          signOutBtn.style.display = 'none';
-          signInBtn.style.display = 'inline-flex';
+          signOutBtn.style.display='none';
+          signInBtn.style.display='inline-flex';
         }
       });
     }
