@@ -5,18 +5,18 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>CAT • Cultural Activity Team | RNSIT</title>
-  <meta name="description" content="CAT RNSIT — Neon/Gen‑Z, anime.js animations, Google Sign‑In, committees, events, live updates, and interactive vibes." />
+  <meta name="description" content="CAT RNSIT — Register for events, explore committees, join the crew, and get live campus updates." />
 
-  <!-- Fonts (properly linked) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
 
   <!-- Icons -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
 
   <!-- anime.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 
   <style>
     /* ===== Neon Theme (default) ===== */
@@ -45,17 +45,6 @@
       --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Inter, "Helvetica Neue", Arial;
     }
 
-    /* Pastel theme toggle (optional) */
-    [data-theme="pastel"]{
-      --bg:#f8fafc; --text:#162844; --muted:#6b7b93;
-      --card:#ffffff; --glass:rgba(255,255,255,0.85); --border: rgba(23,35,59,0.14);
-      --c1:#B8E6D0; --c2:#A8D8F0; --c3:#FFC7B0; --c4:#D7D3FF; --c5:#FFE9A9;
-      --grad-1: linear-gradient(135deg,var(--c1),var(--c2));
-      --grad-2: linear-gradient(135deg,var(--c3),var(--c4));
-      --grad-3: linear-gradient(135deg,var(--c5),var(--c2));
-      --shadow: 0 18px 48px rgba(23,35,59,0.12);
-    }
-
     /* ===== Reset / Base ===== */
     *{box-sizing:border-box}
     html,body{
@@ -67,9 +56,9 @@
     }
     a{color:inherit;text-decoration:none}
     img{max-width:100%;display:block}
-    .container{width: min(1100px, 92vw); margin: 0 auto;}
+    .container{width:min(1100px, 92vw); margin:0 auto;}
 
-    /* ===== Accessibility: reduced motion ===== */
+    /* Accessibility: reduced motion */
     @media (prefers-reduced-motion: reduce) {
       * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior:auto !important; }
     }
@@ -83,19 +72,11 @@
     #scrollRing{position:fixed;top:10px;right:12px;width:44px;height:44px;border-radius:50%;background:conic-gradient(var(--c2) 0% 0%, #1c2b49 0% 100%);display:grid;place-items:center;font-size:.75rem;color:#cfe1ff;z-index:1000;border:1px solid var(--border);backdrop-filter:blur(6px)}
     #scrollPct{filter:drop-shadow(0 8px 16px rgba(0,0,0,0.25))}
 
-    /* Left timeline */
+    /* Left timeline (hide on mobile) */
     .timeline{position:fixed;left:12px;top:80px;display:flex;flex-direction:column;gap:14px;z-index:999}
     .dot{width:12px;height:12px;border-radius:50%;background:#1c2b49;border:1px solid var(--border);box-shadow:var(--shadow);transition:transform .25s ease, background .25s ease}
     .dot.active{background:var(--c2); transform:scale(1.15)}
     @media (max-width:768px){ .timeline{display:none} }
-
-    /* Stickers (SVG) */
-    .sticker{position:fixed;z-index:-1;opacity:.6}
-    .sticker svg{filter:drop-shadow(0 8px 16px rgba(0,0,0,0.35))}
-    .s1{top:6%; left:-40px; width:160px}
-    .s2{bottom:10%; right:-40px; width:160px}
-    .s3{top:58%; left:75%; width:120px}
-    @media (max-width:768px){ .sticker{opacity:.35} }
 
     /* Ticker */
     .ticker{position:sticky;top:0;z-index:60;background:var(--glass);border-bottom:1px solid var(--border);backdrop-filter:blur(10px)}
@@ -109,13 +90,17 @@
     .nav{position:sticky;top:54px;z-index:50;margin:18px auto;border-radius:18px;background:var(--glass);border:1px solid var(--border);box-shadow:var(--shadow)}
     .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:12px 16px}
     .brand{font-family:var(--font-head);font-weight:700;display:flex;align-items:center;gap:10px}
-    .brand-logo{width:34px;height:34px;border-radius:12px;background:var(--grad-2);box-shadow:0 0 22px rgba(154,125,255,0.5)}
+    .brand-logo{
+      width:36px;height:36px;border-radius:10px;overflow:hidden;border:1px solid var(--border);
+      box-shadow:0 0 18px rgba(154,125,255,0.45);
+    }
+    .brand-logo img{width:100%;height:100%;object-fit:cover;display:block}
     .brand span{background:var(--grad-1);-webkit-background-clip:text;background-clip:text;color:transparent}
     .nav ul{display:flex;gap:16px;list-style:none;margin:0;padding:0}
     .nav a{padding:10px 12px;border-radius:10px;color:#b9c7de}
     .nav a:hover{background:rgba(255,255,255,0.08);box-shadow:0 10px 16px rgba(0,0,0,0.25)}
     .actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--border);cursor:pointer;transition:box-shadow .2s ease;position:relative;overflow:hidden;background:var(--card);color:var(--text)}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:12px;border:1px solid var(--border);cursor:pointer;transition:box-shadow .2s ease;background:var(--card);color:var(--text)}
     .btn-primary{background:var(--grad-1);color:#0a0f1d;font-weight:800}
     .btn-outline{background:var(--card);color:var(--text);font-weight:700}
     .btn:hover{box-shadow:0 12px 20px rgba(0,0,0,0.35)}
@@ -126,16 +111,15 @@
     .hero{margin:24px auto}
     .hero-grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:28px;align-items:center}
     .hero-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
-    .hero h1{font-family:var(--font-head);font-weight:900;font-size:clamp(2rem, 3vw + 1rem, 3.8rem);line-height:1.03;margin:0 0 8px;color:var(--text);text-shadow:0 8px 24px rgba(0,0,0,0.45)}
+    .hero h1{font-family:var(--font-head);font-weight:900;font-size:clamp(2rem, 3vw + 1rem, 3.6rem);line-height:1.03;margin:0 0 8px;color:var(--text);text-shadow:0 8px 24px rgba(0,0,0,0.45)}
     .hero .sub{color:var(--muted);margin:0 0 18px}
     .hero .cta{display:flex;gap:12px;flex-wrap:wrap}
     .hero-media{border:1px solid var(--border);border-radius:var(--radius);background:rgba(255,255,255,0.06);box-shadow:var(--shadow);padding:16px}
-    .hero-media .badge{background:rgba(255,255,255,0.08);border:1px solid var(--border)}
     @media (max-width:960px){ .hero-grid{grid-template-columns:1fr} }
 
     /* Sections */
     section{margin:40px auto}
-    .section-title{font-family:var(--font-head);font-weight:900;font-size:clamp(1.6rem, 2.2vw + .8rem, 2.6rem);margin-bottom:10px;color:#cfe1ff}
+    .section-title{font-family:var(--font-head);font-weight:900;font-size:clamp(1.6rem, 2.2vw + .8rem, 2.4rem);margin-bottom:10px;color:#cfe1ff}
     .section-sub{color:var(--muted);margin:-4px 0 22px}
 
     /* Events */
@@ -224,11 +208,6 @@
     <div class="dot" id="dot-contact"></div>
   </div>
 
-  <!-- Stickers -->
-  <div class="sticker s1"><svg viewBox="0 0 120 120"><circle cx="60" cy="60" r="40" fill="#ffd166"/><path d="M25 55 L95 55" stroke="#64d2ff" stroke-width="6" stroke-linecap="round"/><path d="M25 68 L95 68" stroke="#ff5bd4" stroke-width="6" stroke-linecap="round"/></svg></div>
-  <div class="sticker s2"><svg viewBox="0 0 120 120"><rect x="25" y="25" width="70" height="70" rx="16" fill="#55ffd7"/><circle cx="60" cy="60" r="8" fill="#9a7dff"/><circle cx="84" cy="60" r="8" fill="#64d2ff"/><circle cx="36" cy="60" r="8" fill="#ffd166"/></svg></div>
-  <div class="sticker s3"><svg viewBox="0 0 120 120"><path d="M20 80 C40 40, 80 40, 100 80" stroke="#ff5bd4" stroke-width="8" fill="none" stroke-linecap="round"/></svg></div>
-
   <!-- Ticker -->
   <div class="ticker">
     <div class="ticker-inner container">
@@ -242,12 +221,17 @@
   <!-- Nav -->
   <nav class="nav">
     <div class="nav-inner container">
-      <div class="brand"><div class="brand-logo" aria-hidden="true"></div>CAT <span>RNSIT</span></div>
+      <div class="brand">
+        <div class="brand-logo">
+          <img src="https://res.cloudinary.com/dx1wxv6ck/image/upload/v1766845182/544806874_18340747831160890_4239570139746452250_n_ob2z58.jpg" alt="CAT Logo"/>
+        </div>
+        CAT <span>RNSIT</span>
+      </div>
       <ul>
         <li><a href="#events">Events</a></li>
         <li><a href="#recruitment">Recruitment</a></li>
         <li><a href="#committees">Committees</a></li>
-        <li><a href="#members">Members</a></li>
+        <li><a href="#members">Crew</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
       <div class="actions">
@@ -264,25 +248,20 @@
     <div class="hero-grid">
       <div class="hero-card">
         <h1 id="heroTitle">Cultural Activity Team</h1>
-        <p class="sub">Neon pop + anime.js motion for <strong>RNSIT</strong>. Register for events, explore committees, and get updates that keep campus buzzing.</p>
+        <p class="sub">Plan, register, and track every cultural event at <strong>RNSIT</strong>. Join committees, get live updates, and manage your registrations.</p>
         <div class="cta">
           <button class="btn btn-primary" onclick="document.getElementById('events').scrollIntoView({behavior:'smooth'})"><i class="fa-solid fa-ticket"></i> Register for Events</button>
-          <a class="btn btn-outline" href="#committees"><i class="fa-solid fa-layer-group"></i> Explore Committees</a>
-        </div>
-        <div class="hero-badges" style="margin-top:10px">
-          <span class="badge">Neon • Comic • Gen‑Z</span>
-          <span class="badge">anime.js interactions</span>
-          <span class="badge">Scroll timeline</span>
+          <a class="btn btn-outline" href="#committees"><i class="fa-solid fa-layer-group"></i> View Committees</a>
+          <a class="btn btn-outline" href="#members"><i class="fa-solid fa-people-group"></i> Meet the Crew</a>
         </div>
       </div>
 
       <div class="hero-media">
-        <h3 style="margin:0 0 8px;font-weight:800">What’s new?</h3>
-        <p class="sub">Upcoming fests, workshops, and campus shows — live ticker on top and full list below.</p>
+        <h3 style="margin:0 0 8px;font-weight:800">Quick actions</h3>
         <div class="hero-badges">
-          <span class="badge">Digital stickers</span>
-          <span class="badge">Confetti success</span>
-          <span class="badge">Vibrant palettes</span>
+          <a class="badge" href="#events">Event calendar</a>
+          <a class="badge" href="#recruitment">Recruitment status</a>
+          <a class="badge" href="#contact">Contact CAT</a>
         </div>
       </div>
     </div>
@@ -291,13 +270,13 @@
   <!-- Events -->
   <section class="container" id="events">
     <h2 class="section-title">Active & Upcoming Events</h2>
-    <p class="section-sub">Register easily. Get updates via email and on this website. Cancel only under terms.</p>
+    <p class="section-sub">Register quickly. Receive updates via email and on this site. Cancel only under terms.</p>
     <div class="grid" id="eventsGrid"></div>
 
     <!-- Manage / Cancel -->
     <div class="hero-card" style="margin-top:22px">
       <h3 style="margin:0 0 8px">Manage / Cancel Registration</h3>
-      <p class="sub">Enter your email to view registrations; cancel with reason (limited by T&C).</p>
+      <p class="sub">Enter your email to view your registrations; cancel with reason (limited by T&C).</p>
       <div class="form-grid">
         <div class="form-row"><label for="manageEmail">Your email</label><input id="manageEmail" type="email" placeholder="name@rnsit.edu.in"/></div>
         <div class="form-row"><label>&nbsp;</label><button class="btn btn-outline" onclick="loadMyRegistrations()"><i class="fa-solid fa-list"></i> Load registrations</button></div>
@@ -340,18 +319,7 @@
   </section>
 
   <!-- Members -->
-  <section class="container" id="members">
-    <h2 class="section-title">CAT Crew • The Backbone</h2>
-    <p class="section-sub">A few of the many members powering festivals, shows, and everything in between.</p>
-    <div class="carousel">
-      <div class="carousel-track" id="membersTrack"></div>
-    </div>
-  </section>
-
-  <!-- Contact -->
-  <section class="container" id="contact">
-    <h2 class="section-title">Contact CAT</h2>
-    <p class="section-sub">Questions? Collaborations? Stage ideas? Drop a message.</p>
+ ass="section-sub">Questions? Collaborations? Stage ideas? Drop a message.</p>
     <div class="hero-card">
       <div class="form-grid">
         <div class="form-row"><label for="cName">Name</label><input id="cName" type="text" placeholder="Your name"/></div>
@@ -373,7 +341,7 @@
         <div class="modal-title"><i class="fa-solid fa-bell"></i> Subscribe to CAT updates</div>
         <div class="close" onclick="closeModal('newsletterModal')"><i class="fa-solid fa-xmark"></i></div>
       </div>
-      <p class="terms">Sign up with Google or your college email to receive newsletters & event alerts.</p>
+      <p class="terms">Sign up using Google or your college email to receive newsletters & event alerts.</p>
       <div class="form-grid">
         <div class="form-row"><label>Email</label><input id="nEmail" type="email" placeholder="yourid@rnsit.edu.in"/><small class="error" id="nError"></small></div>
         <div class="form-row"><label>&nbsp;</label><button class="btn btn-outline" onclick="subscribeNewsletter()"><i class="fa-solid fa-bell"></i> Subscribe</button></div>
@@ -447,7 +415,7 @@
     </div>
   </footer>
 
-  <!-- App JS (anime.js interactions & UI wiring) -->
+  <!-- App JS (anime.js + UI wiring) -->
   <script>
     /* ===== Data ===== */
     const RECRUITMENT_OPEN = false; // toggle true during drives
@@ -471,15 +439,15 @@
     ];
 
     const MEMBERS = [
-      {name:"Ananya", role:"President", img:"https://i.pravatar.cc/150?img=5"},
-      {name:"Rahul", role:"Vice President", img:"https://i.pravatar.cc/150?img=12"},
-      {name:"Meera", role:"Events Lead", img:"https://i.pravatar.cc/150?img=23"},
-      {name:"Arjun", role:"Stage Manager", img:"https://i.pravatar.cc/150?img=32"},
-      {name:"Riya", role:"Design Lead", img:"https://i.pravatar.cc/150?img=45"},
-      {name:"Neha", role:"PR & Outreach", img:"https://i.pravatar.cc/150?img=15"},
-      {name:"Kunal", role:"Logistics", img:"https://i.pravatar.cc/150?img=28"},
-      {name:"Varun", role:"Music Coord", img:"https://i.pravatar.cc/150?img=38"},
-      {name:"Sneha", role:"Dance Coord", img:"https://i.pravatar.cc/150?img=49"},
+      {name:"Ananya", role:"President", img:"https://i.pravatar.cc/120?img=5"},
+      {name:"Rahul", role:"Vice President", img:"https://i.pravatar.cc/120?img=12"},
+      {name:"Meera", role:"Events Lead", img:"https://i.pravatar.cc/120?img=23"},
+      {name:"Arjun", role:"Stage Manager", img:"https://i.pravatar.cc/120?img=32"},
+      {name:"Riya", role:"Design Lead", img:"https://i.pravatar.cc/120?img=45"},
+      {name:"Neha", role:"PR & Outreach", img:"https://i.pravatar.cc/120?img=15"},
+      {name:"Kunal", role:"Logistics", img:"https://i.pravatar.cc/120?img=28"},
+      {name:"Varun", role:"Music Coord", img:"https://i.pravatar.cc/120?img=38"},
+      {name:"Sneha", role:"Dance Coord", img:"https://i.pravatar.cc/120?img=49"},
     ];
 
     /* ===== Year ===== */
@@ -487,6 +455,7 @@
 
     /* ===== Hero per-letter ===== */
     const heroTitle = document.getElementById('heroTitle');
+    heroTitle.textContent = "Cultural Activity Team";
     heroTitle.innerHTML = heroTitle.textContent.split('').map(ch => `<span class="letter">${ch}</span>`).join('');
     anime.timeline({loop:false}).add({
       targets: '#heroTitle .letter',
@@ -497,7 +466,7 @@
       delay: (el, i) => 18*i
     });
 
-    /* ===== Cursor trail (disabled on small screens via CSS) ===== */
+    /* ===== Cursor trail ===== */
     const trailRoot = document.getElementById('trailRoot'); const trailDots=[];
     for(let i=0;i<10;i++){ const d=document.createElement('div'); d.className='trail-dot'; d.style.background=i%2?'var(--c3)':'var(--c2)'; trailRoot.appendChild(d); trailDots.push(d); }
     let mouse={x:innerWidth/2,y:innerHeight/2}; window.addEventListener('mousemove',e=>{mouse.x=e.clientX;mouse.y=e.clientY;});
@@ -618,7 +587,7 @@
       if(!rName||!rEmail||!rYear||!rDept){ rStatus.textContent="Fill all required fields."; return; }
       const store=JSON.parse(localStorage.getItem("catRecruit")||"[]");
       store.push({id:crypto.randomUUID(), rName, rEmail, rYear, rDept, rMotivation, ts:Date.now(), status:"Submitted"}); localStorage.setItem("catRecruit", JSON.stringify(store));
-      rStatus.textContent="Application submitted. Verification will follow via email."; confettiBurst(innerWidth-120, 120);
+      rStatus.textContent="Application submitted. Verification will follow via email.";
     }
 
     /* ===== Committees (render + popup) ===== */
@@ -652,11 +621,11 @@
     function renderMembers(){
       membersTrack.innerHTML = MEMBERS.map(m=>`
         <div class="member">
-          <img src="${m.img}" alt="${m.name}">
+          ${m.img}
           <div style="font-weight:900">${m.name}</div>
           <div class="role">${m.role}</div>
         </div>
-      `).join("");
+      `).join(""); // <-- fixed: real <img> now
       let width=membersTrack.scrollWidth - membersTrack.clientWidth;
       const anim=anime({targets:{pos:0},pos:width,duration:28000,easing:'linear',loop:true,update:a=>{membersTrack.scrollLeft=a.animations[0].currentValue;}});
       membersTrack.addEventListener('mouseenter',()=>anim.pause()); membersTrack.addEventListener('mouseleave',()=>anim.play());
@@ -672,7 +641,7 @@
       const s=document.getElementById("cStatus");
       if(!n||!e||!m){ s.textContent="Please fill the required fields."; return; }
       const store=JSON.parse(localStorage.getItem("catContact")||"[]"); store.push({id:crypto.randomUUID(),n,e,t,m,ts:Date.now()}); localStorage.setItem("catContact", JSON.stringify(store));
-      s.textContent="Sent! CAT team will reach out."; anime({targets:'.chat-launch',scale:[1,1.08,1],duration:600,easing:'easeInOutQuad'});
+      s.textContent="Sent! CAT team will reach out.";
     }
 
     /* ===== Newsletter ===== */
@@ -686,18 +655,18 @@
       closeModal('newsletterModal'); alert("Subscribed! You’ll receive CAT newsletters.");
     }
 
-    /* ===== Chat (AI‑lite) ===== */
+    /* ===== Chat (AI‑lite; replace with backend later) ===== */
     function toggleChat(open){ document.getElementById("chatBox").classList.toggle("open", open); }
     document.getElementById("chatOpen").addEventListener("click", ()=> toggleChat(true));
     const BOT = {
       rules: [
-        {k:/event|register/i, a:"Use ‘Active & Upcoming Events’ → Register button for the event you want."},
-        {k:/recruit|join/i,   a:"Recruitment opens during drives. Fill the form in the Recruitment section when it’s open."},
-        {k:/cancel/i,         a:"Use ‘Manage / Cancel’ with your email, pick a reason, then tap Cancel."},
-        {k:/committee|team/i, a:"Click any committee card to see responsibilities & tools."},
+        {k:/event|register/i, a:"Use the Events section and tap the Register button for your chosen event."},
+        {k:/recruit|join/i,   a:"Recruitment opens during drives. Check the Recruitment section for status."},
+        {k:/cancel/i,         a:"Use Manage/Cancel with your email, pick a reason, then tap Cancel."},
+        {k:/committee|team/i, a:"Click any committee card to see responsibilities and tools."},
         {k:/contact|help/i,   a:"Share your query here or mail cat@rnsit.edu.in. CAT leads will reach out."},
       ],
-      fallback:"Got it! CAT team will contact you soon. For urgent matters, mail cat@rnsit.edu.in."
+      fallback:"Noted! CAT team will contact you soon. For urgent matters, mail cat@rnsit.edu.in."
     };
     function sendChat(){
       const input=document.getElementById("chatInput"); const msg=input.value.trim(); if(!msg) return;
@@ -718,19 +687,18 @@
       anime({targets:card,scale:0.96,opacity:0,translateY:16,duration:220,easing:'easeInQuad',complete:()=>modal.classList.remove('open')});
     }
 
-    /* ===== Link newsletter modal sign-in to nav sign-in ===== */
+    /* Link newsletter modal sign-in to nav sign-in */
     document.getElementById('signInBtnModal').addEventListener('click', ()=>{
       document.getElementById('newsletterModal').classList.remove('open');
       document.getElementById('signInBtn').click();
     });
   </script>
 
-  <!-- ✅ Firebase Auth (ES Modules) — correct, mobile-friendly -->
+  <!-- Firebase Auth (ES Modules) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
     import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 
-    // Your Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyBcHCDBg7FMk9ItN1851vujLqhQaLQ7wCY",
       authDomain: "cat-rnsit.firebaseapp.com",
@@ -754,11 +722,11 @@
         const res = await signInWithPopup(auth, provider);
         const u = res.user;
         userBadge.innerHTML = u.photoURL
-          ? `<img src="${u.photoURL}" alt="avatar" style="width:28px;height:28px;border-radius:50%;margin-right:8px;border:1px solid var(--border)"><span>${u.displayName || u.email}</span>`
+          ? `${u.photoURL} <span>${u.displayName || u.email}</span>`
           : `<span>${u.displayName || u.email}</span>`;
       } catch (e) {
         if (String(e.code).includes("auth/unauthorized-domain")) {
-          alert("Sign-in blocked: unauthorized domain.\nFix: Firebase Console → Authentication → Settings → Authorized domains → add your site domain (e.g., cat-rnsit.pages.dev).");
+          alert("Sign-in blocked: unauthorized domain.\nFix: Firebase Console → Authentication → Settings → Authorized domains → add your site domain (e.g., your.pages.dev).");
         } else {
           alert("Sign-in error: " + e.message);
         }
