@@ -13,10 +13,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
   <!-- Icons -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
   <!-- anime.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 
   <style>
     /* ===== Neon Theme (mobile-first) ===== */
@@ -41,7 +41,7 @@
     img{max-width:100%;display:block}
     .container{width:min(1100px,92vw);margin:0 auto}
 
-    /* ===== Top doodle loader (instead of dots/ticker) ===== */
+    /* ===== Top doodle loader ===== */
     #doodleLoader{position:fixed;top:0;left:0;width:100%;height:10px;z-index:9999;display:none}
     #doodleLoader svg{width:100%;height:100%}
     #doodleLoader path{stroke:url(#g);stroke-width:4;fill:none;stroke-linecap:round;stroke-dasharray:160 24;stroke-dashoffset:220;animation:dash 1.1s ease-in-out infinite}
@@ -55,16 +55,35 @@
     .brand-logo img{width:100%;height:100%;object-fit:cover}
     .brand span{background:var(--grad-1);-webkit-background-clip:text;background-clip:text;color:transparent}
     .actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;border:1px solid var(--border);cursor:pointer;background:var(--card);color:var(--text);font-weight:700}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:12px;border:1px solid var(--border);cursor:pointer;background:var(--card);color:var(--text);font-weight:700;position:relative;overflow:hidden}
     .btn-primary{background:var(--grad-1);color:#0a0f1d}
     .btn-outline{background:var(--card)}
     #userBadge{display:inline-flex;align-items:center;gap:8px;color:#cfe1ff}
     #userBadge img{width:26px;height:26px;border-radius:50%;object-fit:cover;border:1px solid var(--border)}
+    .nav-search{display:flex;gap:6px;align-items:center;flex:1;max-width:420px;margin:8px 12px}
+    .nav-search input{flex:1;background:#0e1530;border:1px solid var(--border);border-radius:10px;padding:8px 10px;color:var(--text)}
     @media (min-width:768px){ .nav-inner{padding:12px 16px} }
 
-    /* ===== Hero ===== */
-    .hero{margin:14px auto}
-    .hero-card{background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow)}
+    /* ===== Hero 3D (parallax layers + tilt) ===== */
+    .hero{margin:14px auto; position:relative}
+    .hero-3d{
+      position:relative; height:220px; border-radius:16px; overflow:hidden;
+      background:linear-gradient(135deg, rgba(255,91,212,0.15), rgba(154,125,255,0.15));
+      border:1px solid var(--border);
+      box-shadow:var(--shadow);
+      perspective:900px;
+    }
+    .layer{position:absolute; inset:0; transform-style:preserve-3d}
+    .blob{position:absolute; width:160px; height:160px; border-radius:40px;
+      background:radial-gradient(circle at 30% 30%, rgba(85,255,215,0.6), transparent 60%);
+      filter:blur(8px);
+    }
+    .blob.pink{background:radial-gradient(circle at 30% 30%, rgba(255,91,212,0.6), transparent 60%)}
+    .blob.blue{background:radial-gradient(circle at 30% 30%, rgba(100,210,255,0.6), transparent 60%)}
+    .hero-card{
+      position:relative; margin-top:-60px;
+      background:var(--glass);border:1px solid var(--border);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow)
+    }
     .hero h1{font-family:var(--font-head);font-weight:900;font-size:clamp(1.8rem,4.8vw,3rem);line-height:1.06;margin:0 0 8px}
     .hero .sub{color:var(--muted);margin:0 0 12px}
     .cta{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -93,9 +112,11 @@
     .committee{background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:12px;text-align:center;cursor:pointer}
     .committee .icon{font-size:24px;margin-bottom:6px;color:#9bd4ff}
     .committee h4{margin:4px 0;font-weight:800}
-    .committee p{color:var(--muted);font-size:.95rem}
+    .committee p{color:#b9c7de;font-size:.95rem}
 
-    /* ===== Crew grid (cards, compact) ===== */
+    /* ===== Crew (members) with dropdown filter ===== */
+    .crew-filter{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+    .crew-filter select{background:#0e1530;border:1px solid var(--border);border-radius:10px;padding:8px;color:var(--text)}
     .crew{display:grid;grid-template-columns:1fr 1fr;gap:10px}
     @media (min-width:768px){ .crew{grid-template-columns:repeat(4,1fr)} }
     .member{background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:10px;text-align:center}
@@ -103,15 +124,14 @@
     .member .name{font-weight:900}
     .member .role{color:#9bd4ff;font-weight:700;margin-top:2px}
 
-    /* ===== Modals & Drawers ===== */
+    /* ===== Modals & Drawer ===== */
     .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(10,16,34,0.55);backdrop-filter:blur(10px);z-index:1000}
     .modal.open{display:flex}
-    .modal-card{width:min(760px,92vw);background:rgba(10,16,34,0.92); /* translucent for readability */ border:1px solid var(--border);border-radius:18px;padding:14px;box-shadow:var(--shadow)}
+    .modal-card{width:min(760px,92vw);background:rgba(10,16,34,0.92);border:1px solid var(--border);border-radius:18px;padding:14px;box-shadow:var(--shadow)}
     .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
     .modal-title{font-weight:900}
     .close{cursor:pointer;opacity:.85}
 
-    /* Bottom drawer: Department picker */
     .drawer{position:fixed;left:0;right:0;bottom:-100%;background:rgba(10,16,34,0.92);border-top:1px solid var(--border);border-radius:18px 18px 0 0;box-shadow:0 -20px 50px rgba(0,0,0,0.45);padding:14px;z-index:1001}
     .drawer.open{bottom:0}
     .drawer h4{margin:0 0 8px}
@@ -131,7 +151,7 @@
 
     /* ===== Chat ===== */
     .chat-launch{position:fixed;right:14px;bottom:14px;z-index:60;background:var(--grad-2);color:#0a0f1d;border-radius:999px;padding:12px 14px;box-shadow:var(--shadow);cursor:pointer;font-weight:900}
-    .chat{position:fixed;right:14px;bottom:70px;width:min(360px,92vw);max-height:62vh;z-index:60;background:rgba(10,16,34,0.92); /* translucent */ border:1px solid var(--border);border-radius:16px;display:none;flex-direction:column;overflow:hidden}
+    .chat{position:fixed;right:14px;bottom:70px;width:min(360px,92vw);max-height:62vh;z-index:60;background:rgba(10,16,34,0.92);border:1px solid var(--border);border-radius:16px;display:none;flex-direction:column;overflow:hidden}
     .chat.open{display:flex}
     .chat-header{display:flex;align-items:center;justify-content:space-between;padding:10px;border-bottom:1px solid var(--border)}
     .chat-body{padding:10px;display:flex;flex-direction:column;gap:8px;overflow:auto}
@@ -139,6 +159,11 @@
     .bubble.me{background:linear-gradient(135deg, rgba(85,255,215,0.22), rgba(154,125,255,0.22))}
     .chat-form{display:flex;gap:8px;padding:10px;border-top:1px solid var(--border)}
     .chat-form input{flex:1}
+
+    /* ===== FAQ ===== */
+    .faq{background:var(--glass);border:1px solid var(--border);border-radius:16px;padding:12px}
+    .faq details{background:rgba(255,255,255,0.08);border:1px solid var(--border);border-radius:12px;padding:10px;margin:8px 0}
+    .faq summary{cursor:pointer;font-weight:800;color:#cfe1ff}
 
     /* ===== Footer ===== */
     footer{border-top:1px solid var(--border);background:rgba(255,255,255,0.06);padding:16px 0;margin:24px 0 40px}
@@ -169,6 +194,10 @@
         </div>
         CAT <span>RNSIT</span>
       </div>
+      <div class="nav-search">
+        <input id="navSearchInput" type="search" placeholder="Search RNSIT/CAT on Google">
+        <button class="btn btn-outline" id="navSearchBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
+      </div>
       <div class="actions">
         <span id="userBadge"></span>
         <!-- single combined button -->
@@ -179,16 +208,23 @@
     </div>
   </nav>
 
-  <!-- Hero -->
+  <!-- Hero 3D -->
   <section class="hero container" id="hero">
+    <div class="hero-3d" id="hero3d">
+      <div class="layer" id="layer">
+        <div class="blob pink" style="top:20px;left:20px"></div>
+        <div class="blob blue" style="top:40px;right:30px"></div>
+        <div class="blob" style="bottom:10px;left:60px"></div>
+      </div>
+    </div>
     <div class="hero-card">
       <h1 id="heroTitle">Cultural Activity Team</h1>
-      <p class="sub">Register for events, explore committees, meet the crew, and get campus updates—built for mobile.</p>
+      <p class="sub">Register for events, explore committees, meet the crew, and get campus updates — built for mobile.</p>
       <div class="cta">
         <button class="btn btn-primary" onclick="document.getElementById('events').scrollIntoView({behavior:'smooth'})"><i class="fa-solid fa-ticket"></i> Events</button>
         <button class="btn btn-outline" onclick="document.getElementById('committees').scrollIntoView({behavior:'smooth'})"><i class="fa-solid fa-layer-group"></i> Committees</button>
         <button class="btn btn-outline" onclick="document.getElementById('members').scrollIntoView({behavior:'smooth'})"><i class="fa-solid fa-people-group"></i> Crew</button>
-        <button class="btn btn-outline" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})"><i class="fa-solid fa-paper-plane"></i> Contact</button>
+        <button class="btn btn-outline" onclick="document.getElementById('faq').scrollIntoView({behavior:'smooth'})"><i class="fa-solid fa-circle-question"></i> FAQ</button>
       </div>
     </div>
   </section>
@@ -207,7 +243,7 @@
         <div class="form-row"><label for="manageEmail">Your email</label><input id="manageEmail" type="email" placeholder="name@rnsit.edu.in"/></div>
         <div class="form-row"><label>&nbsp;</label><button class="btn btn-outline" onclick="loadMyRegistrations()"><i class="fa-solid fa-list"></i> Load</button></div>
       </div>
-      <div id="myRegs" class="list" style="margin-top:10px"></div>
+      <div id="myRegs" class="grid" style="grid-template-columns:1fr; margin-top:10px"></div>
     </div>
   </section>
 
@@ -234,7 +270,14 @@
   <!-- Members -->
   <section class="container" id="members">
     <h2 class="section-title">CAT Crew • The Backbone</h2>
-    <p class="section-sub">Indian names with compact cards; default avatar when photo is missing.</p>
+    <div class="crew-filter">
+      <label for="crewFilter" class="terms">Filter</label>
+      <select id="crewFilter">
+        <option value="all">All</option>
+        <option value="lead">Leads</option>
+        <option value="core">Core</option>
+      </select>
+    </div>
     <div class="crew" id="membersGrid"></div>
   </section>
 
@@ -254,6 +297,29 @@
         <button class="btn btn-primary" onclick="submitContact()"><i class="fa-solid fa-share"></i> Send</button>
         <span id="cStatus" class="terms"></span>
       </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="container" id="faq">
+    <h2 class="section-title">FAQ</h2>
+    <div class="faq">
+      <details>
+        <summary>How do I register for an event?</summary>
+        <p>Go to **Events** → tap **Register** on your event. Enter your details, ensure USN like **1RN24ME015**, and select your department from the drawer.</p>
+      </details>
+      <details>
+        <summary>How do I cancel my registration?</summary>
+        <p>Use **Manage/Cancel** → enter your email → choose a reason → tap **Cancel**. You’ll see the change immediately.</p>
+      </details>
+      <details>
+        <summary>How do I join a committee?</summary>
+        <p>Open **Committees** → tap a card to read responsibilities and tools. Recruitment opens during drives — watch this page and socials.</p>
+      </details>
+      <details>
+        <summary>How do I get updates?</summary>
+        <p>Sign in with Google; after sign‑in, we ask if you want updates. If you agree, your email gets saved locally for newsletters.</p>
+      </details>
     </div>
   </section>
 
@@ -347,7 +413,7 @@
     </div>
   </footer>
 
-  <!-- App JS (UI + anime.js + validations) -->
+  <!-- App JS (UI + anime.js + validations + search + animations) -->
   <script>
     /* ===== Data ===== */
     const EVENTS = [
@@ -367,17 +433,17 @@
       { id:"pr",            name:"PR",            icon:"bullhorn",              intro:"Promotion, outreach & campus buzz.", focus:["Announcements","Press/Newsletters","Influencer collabs","Booths & stalls"], tools:["Copy docs","Mailers","Social boosts"] }
     ];
     const MEMBERS = [
-      {name:"Ananya", role:"President", img:""},
-      {name:"Rahul", role:"Vice President", img:""},
-      {name:"Meera", role:"Events Lead", img:""},
-      {name:"Arjun", role:"Stage Manager", img:""},
-      {name:"Riya", role:"Design Lead", img:""},
-      {name:"Neha", role:"PR & Outreach", img:""},
-      {name:"Kunal", role:"Logistics", img:""},
-      {name:"Varun", role:"Music Coord", img:""},
-      {name:"Sneha", role:"Dance Coord", img:""},
+      {name:"Ananya", role:"President", tier:"lead", img:""},
+      {name:"Rahul", role:"Vice President", tier:"lead", img:""},
+      {name:"Meera", role:"Events Lead", tier:"lead", img:""},
+      {name:"Arjun", role:"Stage Manager", tier:"core", img:""},
+      {name:"Riya", role:"Design Lead", tier:"lead", img:""},
+      {name:"Neha", role:"PR & Outreach", tier:"core", img:""},
+      {name:"Kunal", role:"Logistics", tier:"core", img:""},
+      {name:"Varun", role:"Music Coord", tier:"core", img:""},
+      {name:"Sneha", role:"Dance Coord", tier:"core", img:""},
     ];
-    const DEFAULT_AVATAR = "https://cdn.jsdelivr.net/gh/edent/SuperTinyIcons/images/svg/user.svg"; /* neutral avatar */
+    const DEFAULT_AVATAR = "https://cdn.jsdelivr.net/gh/edent/SuperTinyIcons/images/svg/user.svg";
     const DEPTS = ["CSE","ISE","ECE","EEE","ME","BT","AIML","DS","CIV","ET","MBA","MCA"];
 
     /* ===== Year & loader ===== */
@@ -387,7 +453,32 @@
       setTimeout(()=> dl.style.display="none", 900);
     });
 
-    /* ===== Hero animation ===== */
+    /* ===== Navbar search → Google ===== */
+    document.getElementById('navSearchBtn').addEventListener('click', navSearchSubmit);
+    document.getElementById('navSearchInput').addEventListener('keydown', (e)=>{ if(e.key==='Enter') navSearchSubmit(); });
+    function navSearchSubmit(){
+      const q = document.getElementById('navSearchInput').value.trim();
+      if(!q) return;
+      const url = "https://www.google.com/search?q=" + encodeURIComponent(q + " RNSIT CAT");
+      window.open(url, "_blank");
+    }
+
+    /* ===== Hero 3D tilt + parallax ===== */
+    const hero3d = document.getElementById('hero3d');
+    const layer = document.getElementById('layer');
+    hero3d.addEventListener('mousemove', (e)=>{
+      const r = hero3d.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      layer.style.transform = `rotateY(${x*10}deg) rotateX(${y*-10}deg) translateZ(20px)`;
+    });
+    hero3d.addEventListener('mouseleave', ()=> layer.style.transform = 'rotateY(0deg) rotateX(0deg) translateZ(0)');
+
+    /* Animate blobs */
+    anime({targets:'.blob.pink', translateX:[0,20,-10,0], translateY:[0,-12,8,0], duration:3000, easing:'easeInOutSine', loop:true});
+    anime({targets:'.blob.blue', translateX:[0,-16,10,0], translateY:[0,10,-12,0], duration:3200, easing:'easeInOutSine', loop:true});
+
+    /* ===== Hero letters ===== */
     (function heroLetters(){
       const h=document.getElementById('heroTitle');
       h.innerHTML = h.textContent.split('').map(ch=>`<span class="letter">${ch}</span>`).join('');
@@ -396,6 +487,22 @@
         translateY:[40,0],opacity:[0,1],easing:'easeOutExpo',duration:600,delay:(el,i)=>14*i
       });
     })();
+
+    /* ===== Ripple effect on buttons ===== */
+    document.querySelectorAll('.btn').forEach(btn=>{
+      btn.addEventListener('click', (ev)=>{
+        const ripple = document.createElement('span');
+        ripple.style.position = 'absolute';
+        ripple.style.left = `${ev.offsetX}px`;
+        ripple.style.top = `${ev.offsetY}px`;
+        ripple.style.width = ripple.style.height = '0px';
+        ripple.style.borderRadius = '50%';
+        ripple.style.background = 'rgba(255,255,255,0.25)';
+        ripple.style.transform = 'translate(-50%, -50%)';
+        btn.appendChild(ripple);
+        anime({targets:ripple,width:180,height:180,opacity:[0.5,0],easing:'easeOutQuad',duration:600,complete:()=>ripple.remove()});
+      });
+    });
 
     /* ===== Events grid ===== */
     const grid=document.getElementById("eventsGrid");
@@ -485,7 +592,9 @@
       const idx=store.findIndex(r=>r.id===id); if(idx<0) return;
       const reasonSel=document.getElementById(`reason-${id}`); const reason=reasonSel?.value||"";
       if(!reason){ alert("Please select a cancellation reason."); return; }
-      store[idx].status="Cancelled"; store[idx].cancelReason=reason; localStorage.setItem("catRegs", JSON.stringify(store)); loadMyRegistrations();
+      store[idx].status="Cancelled"; store[idx].cancelReason=reason;
+      localStorage.setItem("catRegs", JSON.stringify(store));
+      loadMyRegistrations();
     }
 
     /* ===== Committees render + filter + popup ===== */
@@ -518,19 +627,24 @@
       openModal('committeeModal','#committeeCard');
     }
 
-    /* ===== Crew ===== */
+    /* ===== Crew (members) with filter ===== */
     const membersGrid=document.getElementById("membersGrid");
-    function renderMembers(){
-      membersGrid.innerHTML = MEMBERS.map(m=>`
+    const crewFilter = document.getElementById("crewFilter");
+    function renderMembers(list){
+      membersGrid.innerHTML = list.map(m=>`
         <div class="member">
-          <img src="${m.img || DEFAULT_AVATAR}" alt="${m.name}">
+          ${m.img || DEFAULT_AVATAR}
           <div class="name">${m.name}</div>
           <div class="role">${m.role}</div>
         </div>
       `).join("");
       anime({targets:'#membersGrid .member',opacity:[0,1],translateY:[14,0],duration:420,easing:'easeOutQuad',delay:(el,i)=>40*i});
     }
-    renderMembers();
+    renderMembers(MEMBERS);
+    crewFilter.addEventListener('change', (e)=>{
+      const v=e.target.value;
+      renderMembers(v==='all'?MEMBERS:MEMBERS.filter(m=>m.tier===v));
+    });
 
     /* ===== Contact ===== */
     function submitContact(){
@@ -547,16 +661,16 @@
     }
 
     /* ===== Chat (offline rules + optional AI endpoint) ===== */
-    const AI_ENDPOINT = ""; // set to your backend URL to enable real AI (expects {answer} JSON)
+    const AI_ENDPOINT = ""; // ⚠️ Set to your backend URL returning {answer:"..."} to enable real AI.
     function toggleChat(open){ document.getElementById("chatBox").classList.toggle("open", open); }
     document.getElementById("chatOpen").addEventListener("click", ()=> toggleChat(true));
     const BOT = {
       rules: [
         {k:/event|register/i, a:"Go to Events → tap Register. USN must look like 1RN24ME015. Pick your department via drawer."},
-        {k:/recruit|join/i,   a:"Recruitment opens during drives. Keep an eye on the site and socials."},
+        {k:/recruit|join/i,   a:"Recruitment opens during drives. Keep an eye on this site and socials."},
         {k:/cancel/i,         a:"Use Manage/Cancel → enter your email → select a reason → Cancel."},
-        {k:/committee|team/i, a:"Open Committees, filter by dropdown, tap any card for details."},
-        {k:/contact|help|support/i, a:"Share your query here or mail cat@rnsit.edu.in. We’ll reach out."},
+        {k:/committee|team/i, a:"Open Committees, filter via dropdown, tap any card for responsibilities & tools."},
+        {k:/contact|help|support/i, a:"Message here or mail cat@rnsit.edu.in. We’ll reach out."},
       ],
       fallback:"Thanks! We’ll contact you soon. For urgent matters, mail cat@rnsit.edu.in."
     };
@@ -622,7 +736,7 @@
 
     function setUserBadge(u){
       const photo = u.photoURL || "https://cdn.jsdelivr.net/gh/edent/SuperTinyIcons/images/svg/user.svg";
-      userBadge.innerHTML = `<img src="${photo}" alt="Profile"><span>${u.displayName || u.email}</span>`;
+      userBadge.innerHTML = `${photo}<span>${u.displayName || u.email}</span>`;
     }
     function openProfile(u){
       document.getElementById("profilePhoto").src = u.photoURL || "https://cdn.jsdelivr.net/gh/edent/SuperTinyIcons/images/svg/user.svg";
