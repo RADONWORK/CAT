@@ -590,7 +590,15 @@
       if(!ok){ status.textContent="Please fill all required fields correctly."; return; }
       const ev=EVENTS.find(e=>e.id===currentEventId);
       const entry={id:crypto.randomUUID(),eventId:ev.id,eventName:ev.name,name,email,usn:usn.toUpperCase(),dept,notes,ts:Date.now(),status:"Active"};
-      const store=JSON.parse(localStorage.getItem("catRegs")||"[]"); store.push(entry); localStorage.setItem("catRegs", JSON.stringify(store));
+      
+import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+import { db } from "./firebase.js";
+
+await addDoc(collection(db, "catRegs"), {
+  ...entry,
+  createdAt: serverTimestamp()
+});
+
       status.textContent="Registered! You’ll receive updates via email.";
       setTimeout(()=> closeModal('registerModal'), 900);
     }
@@ -600,7 +608,15 @@
       const email=document.getElementById("manageEmail").value.trim();
       const wrap=document.getElementById("myRegs"); wrap.innerHTML="";
       if(!validateEmailStrict(email)){ wrap.innerHTML=`<div class="terms">Enter a valid email.</div>`; return; }
-      const store=JSON.parse(localStorage.getItem("catRegs")||"[]").filter(r=>r.email===email);
+      
+import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+import { db } from "./firebase.js";
+
+// email is the variable you already have
+const q = query(collection(db, "catRegs"), where("email", "==", email.toLowerCase()));
+const snap = await getDocs(q);
+const store = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
       if(store.length===0){ wrap.innerHTML=`<div class="terms">No registrations found for ${email}.</div>`; return; }
       wrap.innerHTML = store.map(r=>`
         <div class="card" style="padding:10px">
@@ -620,7 +636,13 @@
       `).join("");
     }
     function cancelReg(id){
-      const store=JSON.parse(localStorage.getItem("catRegs")||"[]");
+      
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+import { db } from "./firebase.js";
+
+const snap = await getDocs(collection(db, "catRegs"));
+const store = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
       const idx=store.findIndex(r=>r.id===id); if(idx<0) return;
       const reasonSel=document.getElementById(`reason-${id}`); const reason=reasonSel?.value||"";
       if(!reason){ alert("Please select a cancellation reason."); return; }
@@ -682,7 +704,13 @@
       const m=document.getElementById("cMsg").value.trim();
       const s=document.getElementById("cStatus");
       if(!n || !validateEmailStrict(e) || !m){ s.textContent="Please fill the fields correctly."; return; }
-      const store=JSON.parse(localStorage.getItem("catContact")||"[]");
+      
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+import { db } from "./firebase.js";
+
+const snap = await getDocs(collection(db, "catContact"));
+const store = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
       store.push({id:crypto.randomUUID(),n,e,t,m,ts:Date.now()});
       localStorage.setItem("catContact", JSON.stringify(store));
       s.textContent="Sent! CAT team will reach out.";
@@ -787,12 +815,30 @@
 
     /* Local profile store by uid */
     function saveLocalProfile(uid, obj){
-      const store = JSON.parse(localStorage.getItem("catProfiles")||"{}");
+      
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+import { db } from "./firebase.js";
+
+// Choose an ID: email or uid (use lowercased email if you don’t have auth)
+const profileId = email.toLowerCase();
+const ref = doc(db, "catProfiles", profileId);
+const snap = await getDoc(ref);
+const profile = snap.exists() ? snap.data() : {};  // same shape you used before
+
       store[uid] = {...(store[uid]||{}), ...obj};
       localStorage.setItem("catProfiles", JSON.stringify(store));
     }
     function loadLocalProfile(uid){
-      const store = JSON.parse(localStorage.getItem("catProfiles")||"{}");
+      
+import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+import { db } from "./firebase.js";
+
+// Choose an ID: email or uid (use lowercased email if you don’t have auth)
+const profileId = email.toLowerCase();
+const ref = doc(db, "catProfiles", profileId);
+const snap = await getDoc(ref);
+const profile = snap.exists() ? snap.data() : {};  // same shape you used before
+
       return store[uid] || {};
     }
 
@@ -839,7 +885,15 @@
         setUserBadge(u);
         const wants = confirm("Do you want to receive CAT updates & newsletters?");
         if(wants){
-          const store = JSON.parse(localStorage.getItem("catNews")||"[]");
+          
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+import { db } from "./firebase.js";
+
+// Fetch all news items from Firestore
+const snap = await getDocs(collection(db, "catNews"));
+const store = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+``
+
           const email = u.email || "";
           if(email && !store.includes(email)) { store.push(email); localStorage.setItem("catNews", JSON.stringify(store)); alert("Subscribed to updates."); }
         }
@@ -1036,3 +1090,4 @@
     submitContact
   };
 </script>
+
