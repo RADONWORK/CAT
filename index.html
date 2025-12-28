@@ -589,7 +589,20 @@
       if(!ok){ status.textContent="Please fill all required fields correctly."; return; }
       const ev=EVENTS.find(e=>e.id===currentEventId);
       const entry={id:crypto.randomUUID(),eventId:ev.id,eventName:ev.name,name,email,usn:usn.toUpperCase(),dept,notes,ts:Date.now(),status:"Active"};
-      const store=JSON.parse(localStorage.getItem("catRegs")||"[]"); store.push(entry); localStorage.setItem("catRegs", JSON.stringify(store));
+      
+import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+import { db } from "./firebase.js";
+
+await addDoc(collection(db, "catRegs"), {
+  ...entry,
+  // keep your schema consistent:
+  email: (entry.email ?? "").toLowerCase(),
+  usn: (entry.usn ?? "").toUpperCase(),
+  status: entry.status ?? "active",
+  createdAt: serverTimestamp(),
+});
+``
+;
       status.textContent="Registered! You’ll receive updates via email.";
       setTimeout(()=> closeModal('registerModal'), 900);
     }
@@ -891,4 +904,5 @@ const
     });
   </script>
 </
+
 
