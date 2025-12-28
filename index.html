@@ -838,7 +838,12 @@
         setUserBadge(u);
         const wants = confirm("Do you want to receive CAT updates & newsletters?");
         if(wants){
-          const store = JSON.parse(localStorage.getItem("catNews")||"[]");
+          
+import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+import { db } from "./firebase.js";
+
+const
+
           const email = u.email || "";
           if(email && !store.includes(email)) { store.push(email); localStorage.setItem("catNews", JSON.stringify(store)); alert("Subscribed to updates."); }
         }
@@ -886,3 +891,4 @@
     });
   </script>
 </
+
