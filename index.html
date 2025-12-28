@@ -1,6 +1,5 @@
 
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -590,15 +589,7 @@
       if(!ok){ status.textContent="Please fill all required fields correctly."; return; }
       const ev=EVENTS.find(e=>e.id===currentEventId);
       const entry={id:crypto.randomUUID(),eventId:ev.id,eventName:ev.name,name,email,usn:usn.toUpperCase(),dept,notes,ts:Date.now(),status:"Active"};
-      
-import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
-import { db } from "./firebase.js";
-
-await addDoc(collection(db, "catRegs"), {
-  ...entry,
-  createdAt: serverTimestamp()
-});
-
+      const store=JSON.parse(localStorage.getItem("catRegs")||"[]"); store.push(entry); localStorage.setItem("catRegs", JSON.stringify(store));
       status.textContent="Registered! You’ll receive updates via email.";
       setTimeout(()=> closeModal('registerModal'), 900);
     }
@@ -608,15 +599,7 @@ await addDoc(collection(db, "catRegs"), {
       const email=document.getElementById("manageEmail").value.trim();
       const wrap=document.getElementById("myRegs"); wrap.innerHTML="";
       if(!validateEmailStrict(email)){ wrap.innerHTML=`<div class="terms">Enter a valid email.</div>`; return; }
-      
-import { collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
-import { db } from "./firebase.js";
-
-// email is the variable you already have
-const q = query(collection(db, "catRegs"), where("email", "==", email.toLowerCase()));
-const snap = await getDocs(q);
-const store = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-
+      const store=JSON.parse(localStorage.getItem("catRegs")||"[]").filter(r=>r.email===email);
       if(store.length===0){ wrap.innerHTML=`<div class="terms">No registrations found for ${email}.</div>`; return; }
       wrap.innerHTML = store.map(r=>`
         <div class="card" style="padding:10px">
@@ -636,13 +619,7 @@ const store = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       `).join("");
     }
     function cancelReg(id){
-      
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
-import { db } from "./firebase.js";
-
-const snap = await getDocs(collection(db, "catRegs"));
-const store = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-
+      const store=JSON.parse(localStorage.getItem("catRegs")||"[]");
       const idx=store.findIndex(r=>r.id===id); if(idx<0) return;
       const reasonSel=document.getElementById(`reason-${id}`); const reason=reasonSel?.value||"";
       if(!reason){ alert("Please select a cancellation reason."); return; }
@@ -704,13 +681,7 @@ const store = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       const m=document.getElementById("cMsg").value.trim();
       const s=document.getElementById("cStatus");
       if(!n || !validateEmailStrict(e) || !m){ s.textContent="Please fill the fields correctly."; return; }
-      
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
-import { db } from "./firebase.js";
-
-const snap = await getDocs(collection(db, "catContact"));
-const store = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-
+      const store=JSON.parse(localStorage.getItem("catContact")||"[]");
       store.push({id:crypto.randomUUID(),n,e,t,m,ts:Date.now()});
       localStorage.setItem("catContact", JSON.stringify(store));
       s.textContent="Sent! CAT team will reach out.";
@@ -815,30 +786,12 @@ const store = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
     /* Local profile store by uid */
     function saveLocalProfile(uid, obj){
-      
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
-import { db } from "./firebase.js";
-
-// Choose an ID: email or uid (use lowercased email if you don’t have auth)
-const profileId = email.toLowerCase();
-const ref = doc(db, "catProfiles", profileId);
-const snap = await getDoc(ref);
-const profile = snap.exists() ? snap.data() : {};  // same shape you used before
-
+      const store = JSON.parse(localStorage.getItem("catProfiles")||"{}");
       store[uid] = {...(store[uid]||{}), ...obj};
       localStorage.setItem("catProfiles", JSON.stringify(store));
     }
     function loadLocalProfile(uid){
-      
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
-import { db } from "./firebase.js";
-
-// Choose an ID: email or uid (use lowercased email if you don’t have auth)
-const profileId = email.toLowerCase();
-const ref = doc(db, "catProfiles", profileId);
-const snap = await getDoc(ref);
-const profile = snap.exists() ? snap.data() : {};  // same shape you used before
-
+      const store = JSON.parse(localStorage.getItem("catProfiles")||"{}");
       return store[uid] || {};
     }
 
@@ -885,15 +838,7 @@ const profile = snap.exists() ? snap.data() : {};  // same shape you used before
         setUserBadge(u);
         const wants = confirm("Do you want to receive CAT updates & newsletters?");
         if(wants){
-          
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
-import { db } from "./firebase.js";
-
-// Fetch all news items from Firestore
-const snap = await getDocs(collection(db, "catNews"));
-const store = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-``
-
+          const store = JSON.parse(localStorage.getItem("catNews")||"[]");
           const email = u.email || "";
           if(email && !store.includes(email)) { store.push(email); localStorage.setItem("catNews", JSON.stringify(store)); alert("Subscribed to updates."); }
         }
@@ -941,153 +886,3 @@ const store = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     });
   </script>
 </
-
-
-<!-- Firebase App & Firestore SDKs -->
-<script type="module">
-  // TODO: Replace with your Firebase project's actual config
-  const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_MSG_SENDER_ID",
-    appId: "YOUR_APP_ID"
-  };
-
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-  import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, updateDoc, serverTimestamp, collection, addDoc, query, where, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
-
-  // Init
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-
-  // ---------- Helpers ----------
-  const byId = (id) => document.getElementById(id);
-  const toast = (msg) => { console.log(msg); };
-
-  // ---------- Auth (Google) ----------
-  const provider = new GoogleAuthProvider();
-  async function signInWithGoogle() {
-    try {
-      await signInWithPopup(auth, provider);
-    } catch (e) { toast(e.message); }
-  }
-  async function doSignOut(){ try { await signOut(auth); } catch(e){ toast(e.message);} }
-
-  onAuthStateChanged(auth, async (user) => {
-    const signedInEl = document.querySelector('[data-signed-in]');
-    const profileSection = document.querySelector('[data-profile-section]');
-    if (user) {
-      signedInEl?.classList.remove('hidden');
-      profileSection?.classList.remove('hidden');
-      // Persist basic profile to Firestore
-      const userRef = doc(db, 'users', user.uid);
-      const snapshot = await getDoc(userRef);
-      if (!snapshot.exists()) {
-        await setDoc(userRef, {
-          uid: user.uid,
-          displayName: user.displayName,
-          email: user.email,
-          photoURL: user.photoURL,
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp()
-        });
-      } else {
-        await updateDoc(userRef, { updatedAt: serverTimestamp() });
-      }
-    } else {
-      signedInEl?.classList.add('hidden');
-      profileSection?.classList.add('hidden');
-    }
-  });
-
-  // ---------- Newsletter Opt-in (replaces localStorage save) ----------
-  async function saveNewsletterOptIn(email){
-    if (!email) { toast('Email required'); return; }
-    try {
-      await setDoc(doc(db, 'newsletter', email), {
-        email,
-        subscribed: true,
-        updatedAt: serverTimestamp()
-      });
-      toast('Saved newsletter opt-in');
-    } catch(e){ toast(e.message); }
-  }
-
-  // ---------- Event Registration ----------
-  async function registerEvent({fullName, email, usn, department, notes, eventId}){
-    if (!email || !usn || !department) { toast('Missing required fields'); return; }
-    try {
-      const reg = await addDoc(collection(db, 'registrations'), {
-        eventId: eventId || 'general',
-        fullName, email, usn, department, notes: notes || '',
-        createdAt: serverTimestamp()
-      });
-      toast('Registered: ' + reg.id);
-    } catch(e){ toast(e.message); }
-  }
-
-  // ---------- Manage/Cancel Registration by Email ----------
-  async function loadRegistrationsByEmail(email){
-    const q = query(collection(db, 'registrations'), where('email', '==', email));
-    const snap = await getDocs(q);
-    const results = [];
-    snap.forEach(d => results.push({ id: d.id, ...d.data() }));
-    return results;
-  }
-  async function cancelRegistration(regId, reason){
-    try {
-      await updateDoc(doc(db, 'registrations', regId), {
-        status: 'cancelled',
-        cancelReason: reason || '',
-        cancelledAt: serverTimestamp()
-      });
-      toast('Cancelled ' + regId);
-    } catch(e){ toast(e.message); }
-  }
-
-  // ---------- Profile Save (Year/Dept/Bio) ----------
-  async function saveProfile({displayName, photoURL, email, year, department, bio}){
-    const user = auth.currentUser; if (!user) { toast('Please sign in'); return; }
-    try {
-      await setDoc(doc(db, 'users', user.uid), {
-        uid: user.uid,
-        displayName: displayName || user.displayName || '',
-        photoURL: photoURL || user.photoURL || '',
-        email: email || user.email || '',
-        year: year || '',
-        department: department || '',
-        bio: bio || '',
-        updatedAt: serverTimestamp()
-      }, { merge: true });
-      toast('Profile saved');
-    } catch(e){ toast(e.message); }
-  }
-
-  // ---------- Contact/Helpdesk ----------
-  async function submitContact({name, email, topic, message}){
-    try {
-      await addDoc(collection(db, 'contact'), {
-        name, email, topic, message,
-        createdAt: serverTimestamp()
-      });
-      toast('Message sent');
-    } catch(e){ toast(e.message); }
-  }
-
-  // ---------- Wire up to DOM (IDs expected in your markup) ----------
-  window.CAT = {
-    signInWithGoogle,
-    doSignOut,
-    saveNewsletterOptIn,
-    registerEvent,
-    loadRegistrationsByEmail,
-    cancelRegistration,
-    saveProfile,
-    submitContact
-  };
-</script>
-
