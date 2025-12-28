@@ -1,4 +1,6 @@
 
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -885,3 +887,152 @@
     });
   </script>
 </
+
+
+<!-- Firebase App & Firestore SDKs -->
+<script type="module">
+  // TODO: Replace with your Firebase project's actual config
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_MSG_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc, updateDoc, serverTimestamp, collection, addDoc, query, where, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+  // Init
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  // ---------- Helpers ----------
+  const byId = (id) => document.getElementById(id);
+  const toast = (msg) => { console.log(msg); };
+
+  // ---------- Auth (Google) ----------
+  const provider = new GoogleAuthProvider();
+  async function signInWithGoogle() {
+    try {
+      await signInWithPopup(auth, provider);
+    } catch (e) { toast(e.message); }
+  }
+  async function doSignOut(){ try { await signOut(auth); } catch(e){ toast(e.message);} }
+
+  onAuthStateChanged(auth, async (user) => {
+    const signedInEl = document.querySelector('[data-signed-in]');
+    const profileSection = document.querySelector('[data-profile-section]');
+    if (user) {
+      signedInEl?.classList.remove('hidden');
+      profileSection?.classList.remove('hidden');
+      // Persist basic profile to Firestore
+      const userRef = doc(db, 'users', user.uid);
+      const snapshot = await getDoc(userRef);
+      if (!snapshot.exists()) {
+        await setDoc(userRef, {
+          uid: user.uid,
+          displayName: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp()
+        });
+      } else {
+        await updateDoc(userRef, { updatedAt: serverTimestamp() });
+      }
+    } else {
+      signedInEl?.classList.add('hidden');
+      profileSection?.classList.add('hidden');
+    }
+  });
+
+  // ---------- Newsletter Opt-in (replaces localStorage save) ----------
+  async function saveNewsletterOptIn(email){
+    if (!email) { toast('Email required'); return; }
+    try {
+      await setDoc(doc(db, 'newsletter', email), {
+        email,
+        subscribed: true,
+        updatedAt: serverTimestamp()
+      });
+      toast('Saved newsletter opt-in');
+    } catch(e){ toast(e.message); }
+  }
+
+  // ---------- Event Registration ----------
+  async function registerEvent({fullName, email, usn, department, notes, eventId}){
+    if (!email || !usn || !department) { toast('Missing required fields'); return; }
+    try {
+      const reg = await addDoc(collection(db, 'registrations'), {
+        eventId: eventId || 'general',
+        fullName, email, usn, department, notes: notes || '',
+        createdAt: serverTimestamp()
+      });
+      toast('Registered: ' + reg.id);
+    } catch(e){ toast(e.message); }
+  }
+
+  // ---------- Manage/Cancel Registration by Email ----------
+  async function loadRegistrationsByEmail(email){
+    const q = query(collection(db, 'registrations'), where('email', '==', email));
+    const snap = await getDocs(q);
+    const results = [];
+    snap.forEach(d => results.push({ id: d.id, ...d.data() }));
+    return results;
+  }
+  async function cancelRegistration(regId, reason){
+    try {
+      await updateDoc(doc(db, 'registrations', regId), {
+        status: 'cancelled',
+        cancelReason: reason || '',
+        cancelledAt: serverTimestamp()
+      });
+      toast('Cancelled ' + regId);
+    } catch(e){ toast(e.message); }
+  }
+
+  // ---------- Profile Save (Year/Dept/Bio) ----------
+  async function saveProfile({displayName, photoURL, email, year, department, bio}){
+    const user = auth.currentUser; if (!user) { toast('Please sign in'); return; }
+    try {
+      await setDoc(doc(db, 'users', user.uid), {
+        uid: user.uid,
+        displayName: displayName || user.displayName || '',
+        photoURL: photoURL || user.photoURL || '',
+        email: email || user.email || '',
+        year: year || '',
+        department: department || '',
+        bio: bio || '',
+        updatedAt: serverTimestamp()
+      }, { merge: true });
+      toast('Profile saved');
+    } catch(e){ toast(e.message); }
+  }
+
+  // ---------- Contact/Helpdesk ----------
+  async function submitContact({name, email, topic, message}){
+    try {
+      await addDoc(collection(db, 'contact'), {
+        name, email, topic, message,
+        createdAt: serverTimestamp()
+      });
+      toast('Message sent');
+    } catch(e){ toast(e.message); }
+  }
+
+  // ---------- Wire up to DOM (IDs expected in your markup) ----------
+  window.CAT = {
+    signInWithGoogle,
+    doSignOut,
+    saveNewsletterOptIn,
+    registerEvent,
+    loadRegistrationsByEmail,
+    cancelRegistration,
+    saveProfile,
+    submitContact
+  };
+</script>
