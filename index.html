@@ -589,20 +589,7 @@
       if(!ok){ status.textContent="Please fill all required fields correctly."; return; }
       const ev=EVENTS.find(e=>e.id===currentEventId);
       const entry={id:crypto.randomUUID(),eventId:ev.id,eventName:ev.name,name,email,usn:usn.toUpperCase(),dept,notes,ts:Date.now(),status:"Active"};
-      
-import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
-import { db } from "./firebase.js";
-
-await addDoc(collection(db, "catRegs"), {
-  ...entry,
-  // keep your schema consistent:
-  email: (entry.email ?? "").toLowerCase(),
-  usn: (entry.usn ?? "").toUpperCase(),
-  status: entry.status ?? "active",
-  createdAt: serverTimestamp(),
-});
-``
-;
+      const store=JSON.parse(localStorage.getItem("catRegs")||"[]"); store.push(entry); localStorage.setItem("catRegs", JSON.stringify(store));
       status.textContent="Registered! You’ll receive updates via email.";
       setTimeout(()=> closeModal('registerModal'), 900);
     }
@@ -851,12 +838,7 @@ await addDoc(collection(db, "catRegs"), {
         setUserBadge(u);
         const wants = confirm("Do you want to receive CAT updates & newsletters?");
         if(wants){
-          
-import { collection, getDocs } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
-import { db } from "./firebase.js";
-
-const
-
+          const store = JSON.parse(localStorage.getItem("catNews")||"[]");
           const email = u.email || "";
           if(email && !store.includes(email)) { store.push(email); localStorage.setItem("catNews", JSON.stringify(store)); alert("Subscribed to updates."); }
         }
@@ -904,5 +886,3 @@ const
     });
   </script>
 </
-
-
