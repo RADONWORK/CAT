@@ -886,3 +886,79 @@
     });
   </script>
 </
+  
+<!-- Firestore Bridge -->
+<script type="module">
+  import {
+    collection, addDoc, setDoc, doc,
+    getDocs, getDoc, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+  import { db } from "./firebase.js";
+
+  const BRIDGE_MAP = {
+    catRegs: { type: "collection" },
+    catNews: { type: "collection" },
+    catContact: { type: "collection" },
+    catProfiles: { type: "profileCollection" },
+  };
+
+  const normalizeEntry = (entry) => ({
+    ...entry,
+    ...(entry.email ? { email: entry.email.toLowerCase() } : {}),
+    ...(entry.usn ? { usn: entry.usn.toUpperCase() } : {}),
+  });
+
+  async function seedLocalStorageFromFirestore() {
+    try {
+      for (const key of ["catRegs", "catNews", "catContact"]) {
+        const snap = await getDocs(collection(db, key));
+        const arr = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        localStorage.setItem(key, JSON.stringify(arr));
+      }
+      console.log("[Bridge] Seeded localStorage from Firestore");
+    } catch (e) {
+      console.error("[Bridge] Seed failed:", e);
+    }
+  }
+
+  (function patchLocalStorage() {
+    const originalSetItem = localStorage.setItem.bind(localStorage);
+    localStorage.setItem = function (key, value) {
+      originalSetItem(key, value);
+      (async () => {
+        try {
+          const cfg = BRIDGE_MAP[key];
+          if (!cfg) return;
+          if (cfg.type === "collection") {
+            let arr = [];
+            try { arr = JSON.parse(value) || []; } catch {}
+            const last = Array.isArray(arr) && arr.length ? arr[arr.length - 1] : null;
+            if (last) {
+              await addDoc(collection(db, key), {
+                ...normalizeEntry(last),
+                bridgedAt: serverTimestamp(),
+              });
+            }
+          }
+          if (cfg.type === "profileCollection") {
+            let obj = {};
+            try { obj = JSON.parse(value) || {}; } catch {}
+            const email = (obj.email || "").toLowerCase();
+            if (!email) return;
+            await setDoc(doc(db, "catProfiles", email), {
+              ...normalizeEntry(obj),
+              updatedAt: serverTimestamp(),
+            }, { merge: true });
+          }
+        } catch (e) {
+          console.error(`[Bridge] Sync failed for ${key}:`, e);
+        }
+      })();
+    };
+    console.log("[Bridge] localStorage.setItem patched for Firestore sync");
+  })();
+
+  document.addEventListener("DOMContentLoaded", seedLocalStorageFromFirestore);
+</script>
+
+
